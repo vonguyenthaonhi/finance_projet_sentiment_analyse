@@ -71,7 +71,7 @@ def save_to_csv(data):
             writer.writerow(row)
 
 # Itérer sur les dates à partir du 26/12/2024
-start_date = datetime(2019, 10, 5)
+start_date = datetime(2024, 12, 31)
 end_date = datetime.today()  # Vous pouvez ajuster cette date si nécessaire
 delta = timedelta(days=1)
 
