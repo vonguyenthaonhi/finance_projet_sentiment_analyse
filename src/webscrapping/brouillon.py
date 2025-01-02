@@ -1,27 +1,59 @@
+# pobook to scrape
+# penser à ajouter des try a notre script en cas d'erreur.
+#lien utiles
+#https://www.incrementors.com/blog/best-practices-for-robots-txt-seo/
+#https://www.useragentlist.net/
+# parseur 
+import requests 
+import pdb
 from bs4 import BeautifulSoup
-import requests
-from bs4 import BeautifulSoup
+
+url = "https://books.toscrape.com/"
+
+# pdb.set_trace() #debeugeur python
+reponse = requests.get(url)
+reponse.encoding = reponse.apparent_encoding
 
 
-# URL de la page contenant les ratios
-html = """https://www.cboe.com/us/options/market_statistics/daily/?_gl=1*eu24av*_up*MQ..*_ga*MTMxNjg2MjEuMTczNTc2MDExOQ..*_ga_5Q99WB9X71*MTczNTc2MDExOS4xLjEuMTczNTc2MDI2NC4wLjAuMA..&gclid=b2dc657e29da11fe0984020bb12ad73e&gclsrc=3p.ds&dt=2021-06-10"""
+def get_text_if_exist(e):
+    if e:
+        return e.text.strip()
+    return None
 
-soup = BeautifulSoup(html, "html.parser")
 
-# Trouver toutes les lignes de la table contenant des ratios
-table_rows = soup.find_all("tr")
+if reponse.status_code == 200: 
+#__________________________obligé____________________
+    html = reponse.text
+    f = open("reponse.html", 'w')
+    f.write(html)
+    f.close()
 
-# Dictionnaire pour stocker les ratios
-ratios = {}
+    soup = BeautifulSoup(html, "lxml")
+    test = soup.find("h1").text
+    # la balise choisi grace à inspecter et cliquer sur le bonton qui fait le lien avec le site 
+    print(test)
+#_________________________________________importer 1 element__________
+    #e_prix = soup.find("p", class_="price_color").text  #ajout class_="price_color car c'est une classe, ne pas faire attention au nom
+    price = get_text_if_exist(soup.find("p", class_="price_color"))
+    print(price)
+#_________________________________________importer plusieurs element__________
+    #tous les prix on la même balise
+    # pas besoin de get_text_if_exist car utilse que pour un élément
 
-# Boucler à travers chaque ligne pour récupérer le ratio
-for row in table_rows:
-    cells = row.find_all("td")
-    if len(cells) == 2:  # Si la ligne a deux cellules, le ratio est dans la seconde
-        ratio_name = cells[0].text.strip()
-        ratio_value = cells[1].text.strip()
-        ratios[ratio_name] = ratio_value
+    prices = soup.find_all("p", class_="price_color") 
+    for price in prices: 
+        print(price.text)
 
-# Afficher les résultats
-for ratio_name, ratio_value in ratios.items():
-    print(f"{ratio_name}: {ratio_value}")
+    titles = soup.find_all("a") 
+    for title in titles: 
+        if title.get("title"):
+            print(title.get("title")) 
+        
+else:
+    print("error", reponse.status_code)
+print("succes")
+
+
+
+# <p class="price_color">£47.82</p>
+# <a href="catalogue/sharp-objects_997/index.html" 

@@ -20,7 +20,7 @@ def accept_cookies():
     global cookies_accepted
     try:
         if not cookies_accepted:
-            accept_button = WebDriverWait(driver, 7).until(
+            accept_button = WebDriverWait(driver, 8).until(
                 EC.element_to_be_clickable((By.CLASS_NAME, "cky-btn-accept"))
             )
             accept_button.click()
@@ -71,7 +71,7 @@ def save_to_csv(data):
             writer.writerow(row)
 
 # Itérer sur les dates à partir du 26/12/2024
-start_date = datetime(2029, 10, 5)
+start_date = datetime(2019, 10, 5)
 end_date = datetime.today()  # Vous pouvez ajuster cette date si nécessaire
 delta = timedelta(days=1)
 
