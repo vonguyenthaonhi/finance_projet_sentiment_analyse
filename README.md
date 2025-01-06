@@ -60,7 +60,6 @@ You can run the model with the following command :
 
 ```
 cd ..
-cd app/
 streamlit run home.py
 ```
 
