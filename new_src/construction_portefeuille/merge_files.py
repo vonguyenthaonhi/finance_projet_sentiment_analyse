@@ -63,3 +63,33 @@ add_put_call_ratio_eu('new_data/volatility/BP_PLC_financial_data_23k.csv', 'new_
 add_put_call_ratio_eu('new_data/volatility/Stora_Enso_financial_data_23k.csv', 'new_data/direct_download_call_put/Put_Call Ratio STOXX50 - Données Historiques.csv', 'new_data/financial_data_putcall', 'Stora Enso')
 add_put_call_ratio_eu('new_data/volatility/Total_Energies_financial_data_23k.csv', 'new_data/direct_download_call_put/Put_Call Ratio STOXX50 - Données Historiques.csv', 'new_data/financial_data_putcall', 'Total Energies')
 
+
+def add_rfr(financial_data_path, rfr_path, output_dir, company_name):
+    """
+    Adds the Risk_free rate from the ratios file to the financial data file, ensuring alignment by date.
+    """
+    try:
+        financial_data = pd.read_csv(financial_data_path)
+        rfr_data = pd.read_csv(rfr_path, index_col=0)
+        rfr_data['Date'] = pd.to_datetime(rfr_data['Date'])
+        financial_data['Date'] = pd.to_datetime(financial_data['Date'])
+
+        # Ensure both datasets have the necessary columns
+        rfr_data = rfr_data[['Date', 'Close']]
+        rfr_data.rename(columns={'Close': 'Risk-free rate'}, inplace=True)
+        merged_data = pd.merge(financial_data, rfr_data, on='Date', how='left')
+
+        sanitized_company_name = company_name.replace(' ', '_')
+        output_file = os.path.join(output_dir, f"{sanitized_company_name}_add_risk_free_rate.csv")
+        merged_data.to_csv(output_file, index=False)
+
+        print(f"Risk-free rate added successfully. Updated file saved to: {output_file}")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+add_rfr('new_data/financial_data_putcall/BP_PLC_updated_financial_data.csv', 'new_data/volatility/risk_free_rate_EU.csv', 'new_data/risk_free_rate_added', 'BP PLC')
+add_rfr('new_data/financial_data_putcall/Stora_Enso_updated_financial_data.csv', 'new_data/volatility/risk_free_rate_EU.csv', 'new_data/risk_free_rate_added', 'Stora Enso')
+add_rfr('new_data/financial_data_putcall/Total_Energies_updated_financial_data.csv', 'new_data/volatility/risk_free_rate_EU.csv', 'new_data/risk_free_rate_added', 'Total Energies')
+add_rfr('new_data/financial_data_putcall/FMC_Corp_updated_financial_data.csv', 'new_data/volatility/risk_free_rate_US.csv', 'new_data/risk_free_rate_added', 'FMC Corp')
+add_rfr('new_data/financial_data_putcall/BHP_Group_updated_financial_data.csv', 'new_data/volatility/risk_free_rate_US.csv', 'new_data/risk_free_rate_added', 'BHP Group')
