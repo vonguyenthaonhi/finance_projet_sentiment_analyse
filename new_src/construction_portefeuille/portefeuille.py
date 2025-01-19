@@ -1,154 +1,117 @@
-import os
 import pandas as pd
-import numpy as np
+import os
 
-def load_and_preprocess_data(file_path):
+def merge_put_call_ratios(file_paths, stock_names):
     """
-    Load and preprocess the dataset.
-    
-    Parameters:
-        file_path (str): Path to the CSV file.
-
-    Returns:
-        pd.DataFrame: Preprocessed dataset.
+    Merges 'Put-Call Ratio' data for multiple stocks into a single DataFrame aligned by date.
     """
-    # Load the dataset
-    data = pd.read_csv(file_path)
+    stock_data = {name: pd.read_csv(file_path) for name, file_path in zip(stock_names, file_paths)}
+    put_call_ratios = {name: df[['Date', 'Put-Call Ratio']] for name, df in stock_data.items()}
+    merged_data = None
 
-    # Convert 'Date' to datetime format
-    data['Date'] = pd.to_datetime(data['Date'])
+    for name, df in put_call_ratios.items():
+        df = df.rename(columns={'Put-Call Ratio': name}) 
+        merged_data = pd.merge(merged_data, df, on='Date', how='outer')
 
-    # Define PCR thresholds for sentiment classification
-    def classify_pcr(pcr):
-        if pcr < 0.7:
-            return 'Bullish'
-        elif pcr > 1.2:
-            return 'Bearish'
+    merged_data['Date'] = pd.to_datetime(merged_data['Date'])
+    merged_data.set_index('Date', inplace=True)
+
+    return merged_data
+
+def calculate_signals_pcr(put_call_ratios, bullish_threshold, bearish_threshold):
+    """
+    Define function to calculate signals based on Put-Call Ratio, with streak reset for trend changes.
+    """
+    streak = 0
+    signals = []
+    previous_signal = None
+
+    for ratio in put_call_ratios:
+        if ratio < bullish_threshold:  
+            if previous_signal != "Bullish":
+                streak = 0  # Reset streak on trend change
+            streak += 1
+            current_signal = "Bullish"
+        elif ratio > bearish_threshold:  
+            if previous_signal != "Bearish":
+                streak = 0 
+            streak -= 1
+            current_signal = "Bearish"
+        else:  # Neutral
+            if previous_signal != "Neutral":
+                streak = 0 
+            current_signal = "Neutral"
+
+        # Assign Buy, Sell, or Hold based on streak
+        if streak >= 3:
+            signals.append("Buy")
+        elif streak <= -3:
+            signals.append("Sell")
         else:
-            return 'Neutral'
+            signals.append("Hold")
 
-    data['PCR Sentiment'] = data['Put-Call Ratio'].apply(classify_pcr)
+        # Update previous signal
+        previous_signal = current_signal
 
-    # Check for consecutive signals
-    data['Consecutive Signal'] = (data['PCR Sentiment'] != data['PCR Sentiment'].shift()).cumsum()
-    data['Signal Streak'] = data.groupby('Consecutive Signal').cumcount() + 1
+    return signals
 
-    # Assign initial equal weights (20% for each stock)
-    initial_weight = 0.2
-    data['Initial Weight'] = initial_weight
-
-    # Adjust weights based on sentiment classification and streak length
-    def adjust_weights(row):
-        if row['PCR Sentiment'] == 'Bullish':
-            return row['Initial Weight'] + 0.05 * min(row['Signal Streak'], 3)  # Increase weight up to 15% for 3 days
-        elif row['PCR Sentiment'] == 'Bearish':
-            return row['Initial Weight'] - 0.05 * min(row['Signal Streak'], 3)  # Decrease weight up to 15% for 3 days
-        else:
-            return row['Initial Weight']  # No change for Neutral
-
-    data['Adjusted Weight'] = data.apply(adjust_weights, axis=1)
-
-    # Normalize weights to ensure they sum to 100%
-    total_adjusted_weight = data['Adjusted Weight'].sum()
-    data['Normalized Weight'] = data['Adjusted Weight'] / total_adjusted_weight
-
-    # Calculate portfolio returns
-    data['Portfolio Return'] = data['Daily Return'] * data['Normalized Weight']
-
-    return data
-
-def calculate_var_and_sharpe(data):
+def calculate_dynamic_portfolio_weights(signal_data, stock_names):
     """
-    Calculate Value at Risk (VaR) and Sharpe Ratio.
-
-    Parameters:
-        data (pd.DataFrame): Dataset with 'Portfolio Return'.
-
-    Returns:
-        dict: VaR and Sharpe Ratio.
+    Calculates daily portfolio weights dynamically based on signal data for multiple stocks.
     """
-    # Value at Risk (VaR)
-    confidence_level = 0.95
-    portfolio_returns = data['Portfolio Return']
-    VaR_95 = np.percentile(portfolio_returns, (1 - confidence_level) * 100)
+    # Initialize portfolio weights
+    initial_weight = 1 / len(stock_names)
 
-    # Sharpe Ratio
-    risk_free_rate = 0.02 / 252  # Assuming annual risk-free rate of 2%
-    mean_portfolio_return = portfolio_returns.mean()
-    portfolio_std_dev = portfolio_returns.std()
+    weight_data = pd.DataFrame(index=signal_data.index)
 
-    sharpe_ratio = (mean_portfolio_return - risk_free_rate) / portfolio_std_dev
+    # Calculate dynamic weights for each stock
+    for stock in stock_names:
+        weight_data[f"{stock}_Weight"] = initial_weight  
+        for i, signal in enumerate(signal_data[f"{stock}_Signal"]):
+            if i > 0:  
+                if signal == "Buy":
+                    weight_data.iloc[i, weight_data.columns.get_loc(f"{stock}_Weight")] = (
+                        weight_data.iloc[i - 1, weight_data.columns.get_loc(f"{stock}_Weight")] * 1.1
+                    )  # Increase by 10%
+                elif signal == "Sell":
+                    weight_data.iloc[i, weight_data.columns.get_loc(f"{stock}_Weight")] = (
+                        weight_data.iloc[i - 1, weight_data.columns.get_loc(f"{stock}_Weight")] * 0.9
+                    )  # Decrease by 10%
+                else:
+                    weight_data.iloc[i, weight_data.columns.get_loc(f"{stock}_Weight")] = (
+                        weight_data.iloc[i - 1, weight_data.columns.get_loc(f"{stock}_Weight")]
+                    )  # Hold
 
-    return {
-        'VaR_95': VaR_95,
-        'Sharpe Ratio': sharpe_ratio
-    }
+    # Normalize weights to ensure they sum to 1 each day
+    weight_data["Total_Weight"] = weight_data[[f"{stock}_Weight" for stock in stock_names]].sum(axis=1)
+    for stock in stock_names:
+        weight_data[f"{stock}_Normalized_Weight"] = (
+            weight_data[f"{stock}_Weight"] / weight_data["Total_Weight"]
+        )
 
-def process_directory(directory_path, output_dir):
-    """
-    Process all CSV files in a directory and save updated data to output directory.
+    weight_data.drop(columns=["Total_Weight"], inplace=True)
 
-    Parameters:
-        directory_path (str): Path to the directory containing CSV files.
-        output_dir (str): Path to the directory to save updated files.
-
-    Returns:
-        dict: Results for each file.
-    """
-    results = {}
-    all_data = []
-    stock_names = []
-
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    for file_name in os.listdir(directory_path):
-        if file_name.endswith('.csv'):
-            file_path = os.path.join(directory_path, file_name)
-            
-            # Load and preprocess data
-            data = load_and_preprocess_data(file_path)
-
-            # Calculate VaR and Sharpe Ratio for individual stocks
-            metrics = calculate_var_and_sharpe(data)
-
-            # Store results for individual stocks
-            results[file_name] = metrics
-
-            # Collect data for the entire portfolio
-            stock_name = os.path.splitext(file_name)[0]  # Extract company name from file name
-            stock_names.extend([stock_name] * len(data))
-            all_data.append(data[['Date', 'Portfolio Return', 'Normalized Weight']].copy())
-
-            # Export the updated dataset
-            sanitized_company_name = stock_name.replace(' ', '_')
-            output_file = os.path.join(output_dir, f"{sanitized_company_name}_updated_financial_data.csv")
-            data.to_csv(output_file, index=False)
-
-            print(f"File processed: {file_name}. Updated file saved to: {output_file}")
-
-    # Combine data for the entire portfolio
-    portfolio_data = pd.concat(all_data, axis=0)
-    portfolio_data['Stock'] = stock_names
-
-    # Calculate portfolio-level VaR and Sharpe Ratio
-    portfolio_metrics = calculate_var_and_sharpe(portfolio_data)
-
-    # Calculate overall weight per stock
-    total_weights = portfolio_data.groupby('Stock')['Normalized Weight'].sum()
-    portfolio_metrics['Stock Weights'] = total_weights.to_dict()
-
-    return results, portfolio_metrics
-# Define the input and output directory paths
-input_folder = "new_data/financial_data_putcall"  # Replace with your actual input folder path
-output_folder = "new_data/portefeuille_data"  # Replace with your actual output folder path
-
-# Process the directory and calculate metrics
-results, portfolio_metrics = process_directory(input_folder, output_folder)
+    return weight_data
 
 
-# Print overall portfolio metrics
-print("\nPortfolio-Level Metrics:")
-print(f"VaR (95%): {portfolio_metrics['VaR_95']}")
-print(f"Sharpe Ratio: {portfolio_metrics['Sharpe Ratio']}")
-print(f"Stock Weights: {portfolio_metrics['Stock Weights']}")
+
+
+#a mettre dans un fichier main...
+file_paths = [
+    "new_data/risk_free_rate_added/BHP_Group_add_risk_free_rate.csv",
+    "new_data/risk_free_rate_added/BP_PLC_add_risk_free_rate.csv",
+    "new_data/risk_free_rate_added/FMC_Corp_add_risk_free_rate.csv",
+    "new_data/risk_free_rate_added/Stora_Enso_add_risk_free_rate.csv",
+    "new_data/risk_free_rate_added/Total_Energies_add_risk_free_rate.csv"
+]
+stock_names = ["BHP_Group", "BP_PLC", "FMC_Corp", "Stora_Enso", "Total_Energies"]
+merged_data = merge_put_call_ratios(file_paths, stock_names)
+
+bullish_threshold = -1
+bearish_threshold = 1
+
+signal_data = merged_data.copy()
+for stock in stock_names:
+    signal_data[f"{stock}_Signal"] = calculate_signals_pcr(signal_data[stock], bullish_threshold, bearish_threshold)
+
+weight_data = calculate_dynamic_portfolio_weights(signal_data, stock_names)
