@@ -40,9 +40,8 @@ def get_financial_data(symbol, start_date, end_date):
         print(f"Erreur avec {symbol}: {e}")
         return None
 
-# Période de l'année 2023
-start_date = "2023-01-01"
-end_date = "2023-12-31"
+start_date = "2019-01-01"
+end_date = "2024-12-31"
 
 # Pour chaque entreprise, obtenir les données journalières et exporter un fichier CSV
 for company, symbol in symbols.items():

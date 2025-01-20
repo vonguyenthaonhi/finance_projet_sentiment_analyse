@@ -6,8 +6,8 @@ ticker_EU = "OBLI.PA"  # Amundi PEA Obligations d'État Euro UCITS ETF
 ticker_US = "^IRX" 
 
 # Période souhaitée
-start_date = "2023-01-01"
-end_date = "2023-12-31"
+start_date = "2019-01-01"
+end_date = "2024-12-31"
 
 # Téléchargement des données
 rfr_eu_data = yf.download(ticker_EU, start=start_date, end=end_date, interval="1d")
