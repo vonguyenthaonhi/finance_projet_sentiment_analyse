@@ -14,9 +14,11 @@ def add_put_call_ratio_us(financial_data_path, ratios_path, output_dir, company_
         ratios_data['Date'] = pd.to_datetime(ratios_data['Date'])
 
         # Merge the data on 'Date', assigning 0 to missing Put-Call Ratios in financial data
-        merged_data = pd.merge(financial_data, ratios_data[['Date', 'Ratio Value']], on='Date', how='left')
-        merged_data['Ratio Value'].fillna(0, inplace=True)
+        merged_data = pd.merge(financial_data, ratios_data[['Date', 'Ratio Value']], on='Date', how='inner')
+        #merged_data['Ratio Value'].fillna(0, inplace=True)
+        merged_data["Ratio Value"] = merged_data["Ratio Value"].fillna(0) 
         merged_data.rename(columns={'Ratio Value': 'Put-Call Ratio'}, inplace=True)
+        
 
         sanitized_company_name = company_name.replace(' ', '_')
         output_file = os.path.join(output_dir, f"{sanitized_company_name}_updated_financial_data.csv")
@@ -43,7 +45,7 @@ def add_put_call_ratio_eu(financial_data_path, ratios_path, output_dir, company_
             ratios_data['Dernier'] = ratios_data['Dernier'].str.replace(',', '.').astype(float)
 
         # Merge the data on 'Date', assigning 0 to missing values in the financial data
-        merged_data = pd.merge(financial_data, ratios_data[['Date', 'Dernier']], on='Date', how='left')
+        merged_data = pd.merge(financial_data, ratios_data[['Date', 'Dernier']], on='Date', how='inner')
         merged_data['Dernier'].fillna(0, inplace=True)
         merged_data.rename(columns={'Dernier': 'Put-Call Ratio'}, inplace=True)
 
