@@ -11,7 +11,10 @@ def merge_put_call_ratios(file_paths, stock_names):
 
     for name, df in put_call_ratios.items():
         df = df.rename(columns={'Put-Call Ratio': name}) 
-        merged_data = pd.merge(merged_data, df, on='Date', how='outer')
+        if merged_data is None:  # Initialize with the first DataFrame
+            merged_data = df
+        else:  # Merge with the existing DataFrame
+            merged_data = pd.merge(merged_data, df, on='Date', how='outer')
 
     merged_data['Date'] = pd.to_datetime(merged_data['Date'])
     merged_data.set_index('Date', inplace=True)
