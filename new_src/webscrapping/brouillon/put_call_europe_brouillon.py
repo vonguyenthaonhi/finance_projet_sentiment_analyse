@@ -73,7 +73,7 @@ try:
     if not table_rows:
         print("Aucune donnée trouvée dans le tableau.")
         driver.quit()
-        exit()
+        exit(
     
     today = datetime.today()
     last_month = today - timedelta(days=30) 
