@@ -6,6 +6,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+#________________________________________Paramètres____________________________
+start_date = datetime(2017, 1, 1)
+end_date = datetime(2024, 12, 31) # Vous pouvez ajuster cette date si nécessaire
+delta = timedelta(days=1)
+#_______________________________________Paramètres_____________________________
+
+
+
+
 # URL de base
 url_base = """https://www.cboe.com/us/options/market_statistics/daily/?dt="""  # Le paramètre de date sera ajouté
 
@@ -70,9 +79,6 @@ def save_to_csv(data):
         for row in data:
             writer.writerow(row)
 
-start_date = datetime(2017, 1, 1)
-end_date = datetime(2024, 12, 31) # Vous pouvez ajuster cette date si nécessaire
-delta = timedelta(days=1)
 
 # Liste pour stocker les résultats
 ratios_data = []
