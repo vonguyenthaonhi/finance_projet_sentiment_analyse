@@ -1,0 +1,16 @@
+app:
+  name: "Projet finance"
+  version: "/1.0"
+  debug: true
+
+cors:
+  origins:
+    - "http://localhost"
+    - "http://localhost:3000"
+    - "http://localhost:8080"
+
+# database:
+#   url: "postgresql://user:password@localhost:5432/mydatabase"
+
+logging:
+  level: "INFO"
