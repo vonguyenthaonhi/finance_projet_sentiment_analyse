@@ -118,3 +118,5 @@ for stock in stock_names:
     signal_data[f"{stock}_Signal"] = calculate_signals_pcr(signal_data[stock], bullish_threshold, bearish_threshold)
 
 weight_data = calculate_dynamic_portfolio_weights(signal_data, stock_names)
+
+print(weight_data)
