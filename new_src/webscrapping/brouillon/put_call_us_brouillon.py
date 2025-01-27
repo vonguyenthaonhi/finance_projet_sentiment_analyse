@@ -6,15 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-#________________________________________Paramètres____________________________
-start_date = datetime(2017, 1, 1)
-end_date = datetime(2024, 12, 31) # Vous pouvez ajuster cette date si nécessaire
-delta = timedelta(days=1)
-#_______________________________________Paramètres_____________________________
-
-
-
-
 # URL de base
 url_base = """https://www.cboe.com/us/options/market_statistics/daily/?dt="""  # Le paramètre de date sera ajouté
 
@@ -73,12 +64,16 @@ def get_ratio_for_date(date_str):
 
 # Fonction pour enregistrer les données dans un fichier CSV
 def save_to_csv(data):
-    with open("new_data/webscrapped_call_put_ratio/ratios.csv", mode="w", newline="") as file:
+    with open("ratios.csv", mode="w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(["Date", "Ratio Name", "Ratio Value"])  # En-têtes du fichier CSV
         for row in data:
             writer.writerow(row)
 
+# Itérer sur les dates à partir du 26/12/2024
+start_date = datetime(2024, 12, 31)
+end_date = datetime.today()  # Vous pouvez ajuster cette date si nécessaire
+delta = timedelta(days=1)
 
 # Liste pour stocker les résultats
 ratios_data = []
