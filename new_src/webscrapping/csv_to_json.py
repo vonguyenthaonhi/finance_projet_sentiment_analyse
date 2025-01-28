@@ -14,7 +14,7 @@ def convertir_csv_en_json(fichier_csv, fichier_json):
         json.dump(donnees, json_file, indent=4, ensure_ascii=False)
 
 # Remplacez par vos fichiers
-fichier_csv = 'ratios.csv'
+fichier_csv = 'Put_Call Ration EU - Données Historiques 12-2024 -01-2025.csv'
 fichier_json = 'Put_Call Ration EU - Données Historiques 12-2024 -01-2025.json'
 
 convertir_csv_en_json(fichier_csv, fichier_json)

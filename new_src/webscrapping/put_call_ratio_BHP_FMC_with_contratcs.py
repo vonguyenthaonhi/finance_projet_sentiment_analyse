@@ -4,9 +4,12 @@ from polygon import RESTClient
 from datetime import datetime, timedelta
 from crontab import CronTab
 import time
+from dotenv import load_dotenv
+import os
+load_dotenv()
+api_key = os.getenv("POLYGON_KEY")
 
-
-client = RESTClient(api_key="BHkwhucAhqNI8vu68aekkH_KeP1wbGVW")
+client = RESTClient(api_key=api_key)
 
 underlying_stocks = ['BHP', 'FMC']  # liste des stocks
 end_date = datetime.now().strftime('%Y-%m-%d')
