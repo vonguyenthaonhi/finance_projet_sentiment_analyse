@@ -17,7 +17,7 @@ from typing import Any, List
 from pydantic import BaseModel
 from config import settings, setup_app_logging
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes import api_router
+from api.routes import api_router, router
 from datetime import date, datetime
 import yaml
 
@@ -69,29 +69,39 @@ app = FastAPI(
 )
 
 root_router = APIRouter()
+
 @root_router.get("/")
 def index(request: Request) -> Any:
     """Basic HTML response."""
     body = (
         "<html>"
         "<body style='padding: 10px;'>"
-        "<h1>Welcome to the API</h1>"
-        "<div>"
-        "Check the docs: <a href='/docs'>here</a>"
+        "<h1>Put/Call ratio API</h1>"
+        "<div style='margin-top: 20px;'>"
+        "<p>L’objectif est de récupérer le ratio put/call pour différents marchés."
+        "L'intérêt de ce ratio est de vérifier si les informations issues des sentiments des marchés financiers sont déjà prises "
+        "en compte dans les prix des actifs. Les données sont obtenus  "
+        "en utilisant des données de marchés financiers réels "
+        "et des ratios put/call collectés via des techniques de web scraping.</p>"
+        "</div>"
+        "<div style='margin-top: 20px;'>"
+        "Merci de consulter la documentation <a href='/docs'>ici</a>"
         "</div>"
         "</body>"
         "</html>"
     )
     return HTMLResponse(content=body)
 
+
 app.include_router(api_router, prefix=settings.API_VERSION)
 app.include_router(root_router)
+app.include_router(router, prefix="/api/v1")
 
 
 @app.get("/api/v1/put-call-ratio-us/{date}", response_model=RatioPutCallResponse)
 async def get_put_call_ratio_us(date: str):
     """
-    Récupère le put-call-ratio pour une date donnée (format YYYY-MM-DD).
+    Récupère le put-call-ratio dans notre base pour une date donnée (format YYYY-MM-DD).
     """
     try:
         # Conversion de la date au format datetime.date pour validation
@@ -113,7 +123,7 @@ async def get_put_call_ratio_us(date: str):
 @app.get("/api/v1/put-call-ratio-us/", response_model=List[RatioPutCallResponse])
 async def get_all_put_call_ratios():
     """
-    Récupère tous les put-call ratios.
+    Récupère tous les put-call ratios de notre base.
     """
     return [
         RatioPutCallResponse(

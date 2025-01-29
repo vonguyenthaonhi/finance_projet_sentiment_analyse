@@ -8,3 +8,4 @@ loging==0.0.1
 streamlit
 dotenv
 matplotlib
+selenium
