@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from scipy.stats import chi2, norm
 
 # --- PARAMÈTRES ---
-DATA_FOLDER = "../new_data/financial_data_putcall"
-OUTPUT_FOLDER = "../new_data/results/var"
+DATA_FOLDER = "../new_data/full_data"
+OUTPUT_FOLDER = "../new_output/results/var"
 GRAPH_FOLDER = os.path.join(OUTPUT_FOLDER, "graphs")
 WINDOW = 252  # Fenêtre de 1 an
 TAIL = 0.05  # 5% quantile pour la VaR
