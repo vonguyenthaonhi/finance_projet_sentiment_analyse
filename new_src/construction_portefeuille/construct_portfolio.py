@@ -75,7 +75,8 @@ class ConstructPortfolio:
 
     def calculate_dynamic_portfolio_weights(self):
         """
-        Calculates daily portfolio weights dynamically based on signal data for multiple stocks.
+        Calculates daily portfolio weights dynamically based on signal data for multiple stocks,
+        while ensuring constraints on max and min exposure per stock.
         """
         if self.signal_data is None:
             raise ValueError("Signal data is not available. Run calculate_signals first.")
@@ -85,28 +86,27 @@ class ConstructPortfolio:
 
         for stock in self.stock_names:
             weight_data[f"{stock}_Weight"] = initial_weight
-            for i, signal in enumerate(self.signal_data[f"{stock}_Signal"]):
-                if i > 0:
-                    if signal == "Buy":
-                        weight_data.iloc[i, weight_data.columns.get_loc(f"{stock}_Weight")] = (
-                            weight_data.iloc[i - 1, weight_data.columns.get_loc(f"{stock}_Weight")] * 1.1
-                        )  # Increase by 10%
-                    elif signal == "Sell":
-                        weight_data.iloc[i, weight_data.columns.get_loc(f"{stock}_Weight")] = (
-                            weight_data.iloc[i - 1, weight_data.columns.get_loc(f"{stock}_Weight")] * 0.90
-                        )  # Decrease by 10%
-                    else:
-                        weight_data.iloc[i, weight_data.columns.get_loc(f"{stock}_Weight")] = (
-                            weight_data.iloc[i - 1, weight_data.columns.get_loc(f"{stock}_Weight")]
-                        )  # Hold
 
-        weight_data["Total_Weight"] = weight_data[[f"{stock}_Weight" for stock in self.stock_names]].sum(axis=1)
-        for stock in self.stock_names:
-            weight_data[f"{stock}_Normalized_Weight"] = (
-                weight_data[f"{stock}_Weight"] / weight_data["Total_Weight"]
-            )
+        for i in range(1, len(weight_data)):
+            total_weight = 0
+            for stock in self.stock_names:
+                prev_weight = weight_data.iloc[i - 1, weight_data.columns.get_loc(f"{stock}_Weight")]
+                signal = self.signal_data.iloc[i, self.signal_data.columns.get_loc(f"{stock}_Signal")]
 
-        weight_data.drop(columns=["Total_Weight"], inplace=True)
+                if signal == "Buy":
+                    new_weight = min(prev_weight * 1.1, 0.40)  # Increase by 10%, max 40% (before normalization)
+                elif signal == "Sell":
+                    new_weight = max(prev_weight * 0.90, 0.05)  # Decrease by 10%, min 5% (before normalization)
+                else:
+                    new_weight = prev_weight  # Hold
+
+                weight_data.iloc[i, weight_data.columns.get_loc(f"{stock}_Weight")] = new_weight
+                total_weight += new_weight
+
+            # Normalize weights to ensure the total portfolio sums to 1
+            for stock in self.stock_names:
+                weight_data.iloc[i, weight_data.columns.get_loc(f"{stock}_Weight")] /= total_weight
+
         self.weight_data = weight_data
 
     def save_weights_to_csv(self, file_path):
@@ -116,9 +116,7 @@ class ConstructPortfolio:
         if self.weight_data is None:
             raise ValueError("Weight data is not available. Run calculate_dynamic_portfolio_weights first.")
 
-        normalized_weight_columns = [f"{stock}_Normalized_Weight" for stock in self.stock_names]
-        normalized_weight_data = self.weight_data[normalized_weight_columns]
-        normalized_weight_data.to_csv(file_path)
+        self.weight_data.to_csv(file_path)
 
 
 # Example usage
