@@ -42,7 +42,7 @@ def adjust_var(VaR_hist, put_call_ratio, neutral_value=1.0, bearish_threshold=1.
             VaR_adjusted.iloc[i] *= max(0.8, adjustment)  # Appliquer l'ajustement à la i-ème ligne
         elif pcr > bearish_threshold:  # Bearish sentiment
             adjustment = 1 + 0.1 * abs(pcr - neutral_value)
-            VaR_adjusted.iloc[i] *= min(1.3, adjustment)  # Appliquer l'ajustement à la i-ème ligne
+            VaR_adjusted.iloc[i] *= min(1.2, adjustment)  # Appliquer l'ajustement à la i-ème ligne
 
     return VaR_adjusted
 
