@@ -1,11 +1,11 @@
 Total Observations,Violations,Binomial Statistic,P-Value,Asset,VaR Type
-1090,165,15.3569,0.0,Total,VaR_Hist
-1090,163,15.0789,0.0,Total,VaR_Adjusted
-1063,174,17.0072,0.0,BP,VaR_Hist
-1063,172,16.7258,0.0,BP,VaR_Adjusted
-1061,147,13.234,0.0,BHP,VaR_Hist
-1061,148,13.3749,0.0,BHP,VaR_Adjusted
-1063,154,14.1926,0.0,Stora,VaR_Hist
-1063,146,13.0668,0.0,Stora,VaR_Adjusted
-1061,152,13.9383,0.0,FMC,VaR_Hist
-1061,152,13.9383,0.0,FMC,VaR_Adjusted
+833,33,-1.3751,0.1691,Total,VaR_Hist
+833,31,-1.6931,0.0904,Total,VaR_Adjusted
+812,31,-1.5458,0.1222,BP,VaR_Hist
+812,29,-1.8678,0.0618,BP,VaR_Adjusted
+804,29,-1.8124,0.0699,BHP,VaR_Hist
+804,30,-1.6505,0.0988,BHP,VaR_Adjusted
+812,38,-0.4186,0.6755,Stora,VaR_Hist
+812,30,-1.7068,0.0879,Stora,VaR_Adjusted
+804,38,-0.356,0.7218,FMC,VaR_Hist
+804,38,-0.356,0.7218,FMC,VaR_Adjusted
