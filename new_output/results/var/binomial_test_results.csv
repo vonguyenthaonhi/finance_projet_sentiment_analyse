@@ -1,0 +1,11 @@
+Total Observations,Violations,Binomial Statistic,P-Value,Asset,VaR Type
+1090,165,15.3569,0.0,Total,VaR_Hist
+1090,163,15.0789,0.0,Total,VaR_Adjusted
+1063,174,17.0072,0.0,BP,VaR_Hist
+1063,172,16.7258,0.0,BP,VaR_Adjusted
+1061,147,13.234,0.0,BHP,VaR_Hist
+1061,148,13.3749,0.0,BHP,VaR_Adjusted
+1063,154,14.1926,0.0,Stora,VaR_Hist
+1063,146,13.0668,0.0,Stora,VaR_Adjusted
+1061,152,13.9383,0.0,FMC,VaR_Hist
+1061,152,13.9383,0.0,FMC,VaR_Adjusted
