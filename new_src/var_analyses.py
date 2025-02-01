@@ -136,6 +136,10 @@ for asset in assets:
 kupiec_results, binomial_results = [], []
 for asset in assets:
     asset_data = final_df[final_df['Asset'] == asset]
+    
+    # Filtrage des données pour ne conserver que celles à partir de 2020-10-15
+    asset_data = asset_data[asset_data['Date'] >= '2020-10-15']
+    
     returns, var_hist, var_adj = asset_data['Daily Return'], asset_data['VaR_Hist'], asset_data['VaR_Adjusted']
 
     for var_type, var in [("VaR_Hist", var_hist), ("VaR_Adjusted", var_adj)]:
@@ -147,6 +151,12 @@ for asset in assets:
 
         kupiec_results.append(kupiec_res)
         binomial_results.append(binomial_res)
+
+# Sauvegarde des résultats des tests
+pd.DataFrame(kupiec_results).to_csv(os.path.join(OUTPUT_FOLDER, "kupiec_test_results.csv"), index=False)
+pd.DataFrame(binomial_results).to_csv(os.path.join(OUTPUT_FOLDER, "binomial_test_results.csv"), index=False)
+print("✅ Résultats des tests sauvegardés !")
+
 
 # Sauvegarde des résultats des tests
 pd.DataFrame(kupiec_results).to_csv(os.path.join(OUTPUT_FOLDER, "kupiec_test_results.csv"), index=False)
