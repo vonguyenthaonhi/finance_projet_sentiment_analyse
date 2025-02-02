@@ -96,13 +96,14 @@ class EvaluatePortfolio:
         
         portfolio_sharpe = portfolio_cagr / portfolio_volatility
         benchmark_sharpe = benchmark_cagr / benchmark_volatility
-        correlation = np.corrcoef(self.daily_portfolio_returns, self.benchmark_returns)[0, 1] if len(self.daily_portfolio_returns) == len(self.benchmark_returns) else np.nan
         
         self.performance_metrics = pd.DataFrame({
-            "Metric": ["CAGR", "Volatility", "Sharpe Ratio", "Correlation"],
-            "Portfolio": [portfolio_cagr, portfolio_volatility, portfolio_sharpe, correlation],
-            "Benchmark (SPN/XLE)": [benchmark_cagr, benchmark_volatility, benchmark_sharpe, None]
+            "Metric": ["CAGR", "Volatility", "Sharpe Ratio", ],
+            "Portfolio": [portfolio_cagr, portfolio_volatility, portfolio_sharpe],
+            "Benchmark (SPN/XLE)": [benchmark_cagr, benchmark_volatility, benchmark_sharpe]
         })
+
+        self.performance_metrics.to_csv("new_data/performance_metrics.csv", index=False)
         
     def plot_performance(self):
         """Plot cumulative returns of the portfolio vs. the benchmark."""
