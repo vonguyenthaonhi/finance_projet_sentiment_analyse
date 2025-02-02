@@ -105,7 +105,7 @@ class EvaluatePortfolio:
             "Benchmark (SPN/XLE)": [benchmark_cagr, benchmark_volatility, benchmark_sharpe]
         })
 
-        self.performance_metrics.to_csv("new_data/performance_metrics.csv", index=False)
+        self.performance_metrics.to_csv("new_output/portfolio/performance_metrics.csv", index=False)
         
     def plot_performance(self):
         """Plot cumulative returns of the portfolio vs. the benchmark."""
