@@ -56,9 +56,9 @@ class EvaluatePortfolio:
         
         returns_columns = ["BHP", "BP", "FMC", "Stora_Enso", "Total_Energies"]
         weights_columns = [
-            "BHP_Group_Normalized_Weight", "BP_PLC_Normalized_Weight", 
-            "FMC_Corp_Normalized_Weight", "Stora_Enso_Normalized_Weight", 
-            "Total_Energies_Normalized_Weight"
+            "BHP_Group_Weight", "BP_PLC_Weight", 
+            "FMC_Corp_Weight", "Stora_Enso_Weight", 
+            "Total_Energies_Weight"
         ]
         
         stock_returns = self.full_data[returns_columns]
@@ -94,8 +94,10 @@ class EvaluatePortfolio:
         portfolio_cagr = (cumulative_portfolio_returns.iloc[-1]) ** (1 / max(1, (len(self.daily_portfolio_returns) / 252))) - 1
         benchmark_cagr = (cumulative_benchmark_returns.iloc[-1]) ** (1 / max(1, (len(self.benchmark_returns) / 252))) - 1 if not cumulative_benchmark_returns.empty else np.nan
         
-        portfolio_sharpe = portfolio_cagr / portfolio_volatility
-        benchmark_sharpe = benchmark_cagr / benchmark_volatility
+        RISK_FREE_RATE = 0.02 
+
+        portfolio_sharpe = (portfolio_cagr - RISK_FREE_RATE) / portfolio_volatility
+        benchmark_sharpe = (benchmark_cagr - RISK_FREE_RATE) / benchmark_volatility
         
         self.performance_metrics = pd.DataFrame({
             "Metric": ["CAGR", "Volatility", "Sharpe Ratio", ],

@@ -1,0 +1,10 @@
+Metric,Portfolio,Benchmark (SPN/XLE)
+CAGR,0.08103317707982005,"Ticker
+XLE    0.165332
+Name: 2024-01-31 00:00:00, dtype: float64"
+Volatility,0.30135665113539756,"Ticker
+XLE    0.393155
+dtype: float64"
+Sharpe Ratio,0.20252805720354997,"Ticker
+XLE    0.369656
+dtype: float64"
