@@ -1,0 +1,11 @@
+Total Observations,Violations,Kupiec Statistic,P-Value,Asset,VaR Type
+833,32,2.549,0.1104,Total,VaR_Hist
+833,30,3.7844,0.0517,Total,VaR_Adjusted
+812,31,2.5926,0.1074,BP,VaR_Hist
+812,29,3.8582,0.0495,BP,VaR_Adjusted
+804,29,3.6223,0.057,BHP,VaR_Hist
+804,30,2.9754,0.0845,BHP,VaR_Adjusted
+812,38,0.1789,0.6723,Stora,VaR_Hist
+812,30,3.1908,0.0741,Stora,VaR_Adjusted
+804,38,0.129,0.7195,FMC,VaR_Hist
+804,38,0.129,0.7195,FMC,VaR_Adjusted
