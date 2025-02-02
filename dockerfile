@@ -25,8 +25,6 @@ RUN python3 -m pip install -r requirements.txt
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Exposer le port utilisé par FastAPI
-EXPOSE 8000
 
 # Commande pour lancer FastAPI avec uvicorn (backend)
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
