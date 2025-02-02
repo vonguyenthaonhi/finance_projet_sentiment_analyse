@@ -2,12 +2,15 @@ import logging
 from logging.config import dictConfig
 from pydantic import BaseSettings
 
+
 # Classe de configuration (paramètres)
 class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
+
 settings = Settings()
+
 
 def setup_app_logging(config: Settings):
     """Configure le système de journalisation avec des paramètres personnalisés."""
@@ -15,9 +18,7 @@ def setup_app_logging(config: Settings):
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
-            "default": {
-                "format": config.LOG_FORMAT
-            },
+            "default": {"format": config.LOG_FORMAT},
         },
         "handlers": {
             "console": {

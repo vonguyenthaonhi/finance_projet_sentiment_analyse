@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime, timedelta
 
+
 class HistoricalDataScraper:
     def __init__(self, url):
         self.url = url
@@ -15,17 +16,25 @@ class HistoricalDataScraper:
     def _init_driver(self):
         """Initialise le navigateur avec les options requises."""
         options = Options()
-        options.add_argument("--start-maximized")  # Démarrer le navigateur en plein écran
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        options.add_argument(
+            "--start-maximized"
+        )  # Démarrer le navigateur en plein écran
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()), options=options
+        )
 
     def _accept_cookies(self):
         """Accepte les cookies si le bouton est disponible."""
         try:
             time.sleep(2)  # Attendre que la bannière des cookies apparaisse
-            accept_cookies_button = self.driver.find_element(By.ID, "onetrust-accept-btn-handler")
+            accept_cookies_button = self.driver.find_element(
+                By.ID, "onetrust-accept-btn-handler"
+            )
             accept_cookies_button.click()
             print("Cookies acceptés.")
-            time.sleep(2)  # Attendre que la page se charge après avoir accepté les cookies
+            time.sleep(
+                2
+            )  # Attendre que la page se charge après avoir accepté les cookies
         except Exception as e:
             print(f"Erreur lors de l'acceptation des cookies : {e}")
 
@@ -37,7 +46,9 @@ class HistoricalDataScraper:
             self._accept_cookies()
 
             # Localiser le tableau contenant les données
-            table_rows = self.driver.find_elements(By.XPATH, "//tr[contains(@class, 'historical-data-v2_price__atUfP')]")
+            table_rows = self.driver.find_elements(
+                By.XPATH, "//tr[contains(@class, 'historical-data-v2_price__atUfP')]"
+            )
             if not table_rows:
                 print("Aucune donnée trouvée dans le tableau.")
                 return
@@ -52,7 +63,17 @@ class HistoricalDataScraper:
             # Créer et remplir le fichier CSV
             with open(csv_file, mode="w", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
-                writer.writerow(["Date", "Dernier", "Ouverture", "Haut", "Bas", "Volume", "Variation (%)"])
+                writer.writerow(
+                    [
+                        "Date",
+                        "Dernier",
+                        "Ouverture",
+                        "Haut",
+                        "Bas",
+                        "Volume",
+                        "Variation (%)",
+                    ]
+                )
 
                 for row in table_rows:
                     columns = row.find_elements(By.TAG_NAME, "td")
@@ -64,7 +85,9 @@ class HistoricalDataScraper:
                         bas = columns[4].text.strip()
                         volume = columns[5].text.strip()
                         variation = columns[6].text.strip()
-                        writer.writerow([date, dernier, ouverture, haut, bas, volume, variation])
+                        writer.writerow(
+                            [date, dernier, ouverture, haut, bas, volume, variation]
+                        )
 
             print(f"Les données ont été enregistrées dans le fichier {csv_file}.")
 
@@ -76,6 +99,9 @@ class HistoricalDataScraper:
                 self.driver.quit()
                 print("Navigateur fermé.")
 
+
 if __name__ == "__main__":
-    scraper = HistoricalDataScraper("https://fr.investing.com/indices/put-call-ratio-stoxx50-historical-data")
+    scraper = HistoricalDataScraper(
+        "https://fr.investing.com/indices/put-call-ratio-stoxx50-historical-data"
+    )
     scraper.scrape_data()

@@ -26,6 +26,8 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
 - 📊 Charts and analysis → Visualisations of cross-correlations, Cumulative returns (Portfolio and benchmark) and VaR (Historical vs Adjusted).
 - 📄 Results files → Data and calculations of the portfolio, as well as of risk and sentiment indicators.
 
+📁 app/ → app to visualize, launch webscrap, calculate weights in a porfolio based on energies stocks.
+
 # Installation
 1. Cloner le dépôt GitHub :
     ```bash
@@ -58,5 +60,6 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
     ```bash
     pip install -r requirements.txt
     ```
+
 
 

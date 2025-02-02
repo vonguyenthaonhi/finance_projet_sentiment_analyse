@@ -10,7 +10,6 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.stattools import adfuller, kpss
 
 
-
 np.random.seed(42)
 pd.options.mode.chained_assignment = None
 

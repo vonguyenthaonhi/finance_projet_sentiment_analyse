@@ -23,7 +23,7 @@ import yaml
 
 
 @dataclass
-class RatioPutCall():
+class RatioPutCall:
     date: date
     ratio_name: str
     ratio_value: str
@@ -36,9 +36,10 @@ class RatioPutCallResponse(BaseModel):
 
 
 def charger_json(fichier_json):
-    with open(fichier_json, mode='r', encoding='utf-8') as json_file:
+    with open(fichier_json, mode="r", encoding="utf-8") as json_file:
         donnees = json.load(json_file)
     return donnees
+
 
 with open("config.yml", "r") as file:
     config = yaml.safe_load(file)
@@ -53,22 +54,22 @@ LOGGING_LEVEL = config["logging"]["level"]
 
 put_call_us_list = [
     RatioPutCall(
-        date=datetime.strptime(item['Date'], "%Y-%m-%d").date(),
-        ratio_name=item['Ratio Name'],
-        ratio_value=item['Ratio Value']
+        date=datetime.strptime(item["Date"], "%Y-%m-%d").date(),
+        ratio_name=item["Ratio Name"],
+        ratio_value=item["Ratio Value"],
     )
-    for item in charger_json("../new_data/webscrapped_call_put_ratio/Put_Call Ratio US -Données Historiques 2019_2024.json")
+    for item in charger_json(
+        "../new_data/webscrapped_call_put_ratio/Put_Call Ratio US -Données Historiques 2019_2024.json"
+    )
 ]
 put_call_us_dict = {item.date: item for item in put_call_us_list}
 
 # setup_app_logging(config=settings)
 
-app = FastAPI(
-    title=PROJECT_NAME, 
-    openapi_url=f"{API_VERSION}/openapi.json"
-)
+app = FastAPI(title=PROJECT_NAME, openapi_url=f"{API_VERSION}/openapi.json")
 
 root_router = APIRouter()
+
 
 @root_router.get("/")
 def index(request: Request) -> Any:
@@ -107,16 +108,21 @@ async def get_put_call_ratio_us(date: str):
         # Conversion de la date au format datetime.date pour validation
         valid_date = datetime.strptime(date, "%Y-%m-%d").date()
     except ValueError:
-        raise HTTPException(status_code=400, detail="Format de date invalide. Utilisez 'YYYY-MM-DD'.")
+        raise HTTPException(
+            status_code=400, detail="Format de date invalide. Utilisez 'YYYY-MM-DD'."
+        )
 
     ratio_data = put_call_us_dict.get(valid_date)
     if not ratio_data:
-        raise HTTPException(status_code=404, detail=f"Aucune donnée trouvée pour la date {date}. Rappel, les doonnées ne sont pas disponible les week-ends")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Aucune donnée trouvée pour la date {date}. Rappel, les doonnées ne sont pas disponible les week-ends",
+        )
 
     return RatioPutCallResponse(
         date=ratio_data.date,
         ratio_name=ratio_data.ratio_name,
-        ratio_value=ratio_data.ratio_value
+        ratio_value=ratio_data.ratio_value,
     )
 
 
@@ -127,12 +133,12 @@ async def get_all_put_call_ratios():
     """
     return [
         RatioPutCallResponse(
-            date=ratio.date,
-            ratio_name=ratio.ratio_name,
-            ratio_value=ratio.ratio_value
+            date=ratio.date, ratio_name=ratio.ratio_name, ratio_value=ratio.ratio_value
         )
         for ratio in put_call_us_list
     ]
+
+
 # # Set all CORS enabled origins
 if BACKEND_CORS_ORIGINS:
     app.add_middleware(
@@ -146,10 +152,9 @@ if BACKEND_CORS_ORIGINS:
 if __name__ == "__main__":
     # Use this for debugging purposes only
     logger.warning("Running in development mode. Do not run like this in production.")
-    import uvicorn  
+    import uvicorn
+
     uvicorn.run(app, host="localhost", port=8001, log_level="debug")
-
-
 
 
 # put_call_eu_list = [
@@ -159,8 +164,7 @@ if __name__ == "__main__":
 # put_call_eu_dict = {item.date: item for item in put_call_eu_list}
 
 
-
-# @app.get("/api/v1/put-call-ratio-eu/{date}", 
+# @app.get("/api/v1/put-call-ratio-eu/{date}",
 #          response_model=RatioPutCallResponse)
 # async def get_put_call_ratio_eu(date: str):
 #     """
@@ -169,7 +173,7 @@ if __name__ == "__main__":
 #     ratio_data = put_call_eu_dict.get(date)
 #     if not ratio_data:
 #         raise HTTPException(status_code=404, detail=f"Aucune donnée trouvée pour la date {date}")
-    
+
 #     return RatioPutCallResponse(
 #         date=ratio_data.date,
 #         ratio_name=ratio_data.ratio_name,
@@ -183,7 +187,7 @@ if __name__ == "__main__":
 #     """
 #     ratio_us = put_call_us_dict.get(date)
 #     ratio_eu = put_call_eu_dict.get(date)
-    
+
 #     if not ratio_us and not ratio_eu:
 #         raise HTTPException(
 #             status_code=404,
@@ -199,7 +203,7 @@ if __name__ == "__main__":
 #             status_code=404,
 #             detail=f"Aucune donnée trouvée pour les données EU à la date {date}."
 #         )
-    
+
 #     return {
 #         "date": date,
 #         "us_ratio": {

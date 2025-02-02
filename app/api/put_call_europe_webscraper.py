@@ -8,8 +8,12 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime, timedelta
 
+
 class LastMonthDataScraperEurope:
-    def __init__(self, url="https://fr.investing.com/indices/put-call-ratio-stoxx50-historical-data"):
+    def __init__(
+        self,
+        url="https://fr.investing.com/indices/put-call-ratio-stoxx50-historical-data",
+    ):
         self.url = url
         self.driver = None
         self.data = []  # Stocker les données en mémoire
@@ -19,15 +23,19 @@ class LastMonthDataScraperEurope:
         options = Options()
         options.add_argument("--headless")  # Exécuter en mode headless (sans fenêtre)
         options.add_argument("--start-maximized")
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()), options=options
+        )
 
     def _accept_cookies(self):
         """Accepte les cookies si le bouton est disponible."""
         try:
-            time.sleep(2)  
-            accept_cookies_button = self.driver.find_element(By.ID, "onetrust-accept-btn-handler")
+            time.sleep(2)
+            accept_cookies_button = self.driver.find_element(
+                By.ID, "onetrust-accept-btn-handler"
+            )
             accept_cookies_button.click()
-            time.sleep(2)  
+            time.sleep(2)
         except Exception:
             pass
 
@@ -38,7 +46,9 @@ class LastMonthDataScraperEurope:
             self.driver.get(self.url)
             self._accept_cookies()
 
-            table_rows = self.driver.find_elements(By.XPATH, "//tr[contains(@class, 'historical-data-v2_price__atUfP')]")
+            table_rows = self.driver.find_elements(
+                By.XPATH, "//tr[contains(@class, 'historical-data-v2_price__atUfP')]"
+            )
             if not table_rows:
                 return []
 
@@ -46,22 +56,24 @@ class LastMonthDataScraperEurope:
             for row in table_rows:
                 columns = row.find_elements(By.TAG_NAME, "td")
                 if len(columns) >= 7:
-                    self.data.append({
-                        "Date": columns[0].text.strip(),
-                        "Dernier": columns[1].text.strip(),
-                        "Ouverture": columns[2].text.strip(),
-                        "Haut": columns[3].text.strip(),
-                        "Bas": columns[4].text.strip(),
-                        "Volume": columns[5].text.strip(),
-                        "Variation (%)": columns[6].text.strip(),
-                    })
-            
+                    self.data.append(
+                        {
+                            "Date": columns[0].text.strip(),
+                            "Dernier": columns[1].text.strip(),
+                            "Ouverture": columns[2].text.strip(),
+                            "Haut": columns[3].text.strip(),
+                            "Bas": columns[4].text.strip(),
+                            "Volume": columns[5].text.strip(),
+                            "Variation (%)": columns[6].text.strip(),
+                        }
+                    )
+
             return self.data
 
         except Exception as e:
             print(f"Erreur de scraping : {e}")
             return []
-        
+
         finally:
             if self.driver:
                 self.driver.quit()

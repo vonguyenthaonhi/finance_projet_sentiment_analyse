@@ -12,7 +12,13 @@ class RatioScraper:
     Classe pour scraper les ratios PUT/CALL depuis le site CBOE.
     """
 
-    def __init__(self, start_date, end_date=None, csv_file="Put_Call Ratio US -Données Historiques.csv", verbose=False):
+    def __init__(
+        self,
+        start_date,
+        end_date=None,
+        csv_file="Put_Call Ratio US -Données Historiques.csv",
+        verbose=False,
+    ):
         """
         Initialise le scraper avec les paramètres requis.
 
@@ -72,7 +78,7 @@ class RatioScraper:
             # Sélectionner la ligne contenant le ratio PUT/CALL
             row = self.driver.find_element(
                 By.CSS_SELECTOR,
-                "#daily-market-statistics > div > div:nth-child(2) > table > tbody > tr:nth-child(1)"
+                "#daily-market-statistics > div > div:nth-child(2) > table > tbody > tr:nth-child(1)",
             )
             columns = row.find_elements(By.TAG_NAME, "td")
 

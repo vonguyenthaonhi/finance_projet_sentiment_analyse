@@ -6,12 +6,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 class RatioScraperUS:
     """
     Scraper des ratios PUT/CALL sur le site CBOE.
     """
 
-    def __init__(self, start_date: str, end_date: str = None, csv_file: str = "put_call_ratios.csv", verbose: bool = False):
+    def __init__(
+        self,
+        start_date: str,
+        end_date: str = None,
+        csv_file: str = "put_call_ratios.csv",
+        verbose: bool = False,
+    ):
         """
         Initialise les paramètres du scraping.
 
@@ -21,7 +28,9 @@ class RatioScraperUS:
         :param verbose: Affiche les logs si True.
         """
         self.start_date = datetime.strptime(start_date, "%Y-%m-%d")
-        self.end_date = datetime.strptime(end_date, "%Y-%m-%d") if end_date else datetime.today()
+        self.end_date = (
+            datetime.strptime(end_date, "%Y-%m-%d") if end_date else datetime.today()
+        )
         self.csv_file = csv_file
         self.verbose = verbose
         self.driver = None
@@ -69,7 +78,7 @@ class RatioScraperUS:
             # Récupérer la ligne contenant le ratio PUT/CALL
             row = self.driver.find_element(
                 By.CSS_SELECTOR,
-                "#daily-market-statistics > div > div:nth-child(2) > table > tbody > tr:nth-child(1)"
+                "#daily-market-statistics > div > div:nth-child(2) > table > tbody > tr:nth-child(1)",
             )
             columns = row.find_elements(By.TAG_NAME, "td")
 
@@ -122,6 +131,6 @@ class RatioScraperUS:
             writer.writerow(["Date", "Ratio Name", "Ratio Value"])
             for row in data:
                 writer.writerow([row["date"], row["ratio_name"], row["ratio_value"]])
-        
+
         if self.verbose:
             print(f"✅ Données sauvegardées dans {self.csv_file}.")
