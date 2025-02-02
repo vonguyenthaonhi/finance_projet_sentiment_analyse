@@ -9,3 +9,5 @@ streamlit
 dotenv
 matplotlib
 selenium
+yfinance
+scipy
