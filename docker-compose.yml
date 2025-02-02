@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - frontend
+    environment:
+      - ENV=production
+
+  frontend:
+    image: python:3.10-slim
+    command: streamlit run app/frontend.py
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    environment:
+      - ENV=production
