@@ -11,9 +11,9 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
 
 📁 new_data/ (Raw data and collection scripts)
 
-📂 webscraping/ → Scripts to retrieve the US and European Put-Call Ratio.
-📂 portfolio/ → Data formatting and implementation of the sentiment-based portfolio model.
-📄 données_rendement/ → Historical stock returns collected from Yahoo Finance with yfinance.
+- 📂 webscraping/ → Scripts to retrieve the US and European Put-Call Ratio.
+- 📂 portfolio/ → Data formatting and implementation of the sentiment-based portfolio model.
+- 📄 données_rendement/ → Historical stock returns collected from Yahoo Finance with yfinance.
 
 
 📁 new_output/ (Results and visualisations)
