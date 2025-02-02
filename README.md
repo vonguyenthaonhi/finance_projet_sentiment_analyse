@@ -26,3 +26,37 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
 - 📊 Charts and analysis → Visualisations of cross-correlations, Cumulative returns (Portfolio and benchmark) and VaR (Historical vs Adjusted).
 - 📄 Results files → Data and calculations of the portfolio, as well as of risk and sentiment indicators.
 
+# Installation
+1. Cloner le dépôt GitHub :
+    ```bash
+    git clone https://github.com/lucasvazelle/finance_projet_sentiment_analyse.git
+    cd finance_projet_sentiment_analyse
+    ```
+    
+2. Créer l'environnement virtuel :
+
+    ```bash
+    python -m venv venv
+    ```
+
+3. Activer l'environnement virtuel
+
+    - **Sur Windows** :
+
+        ```bash
+        .\venv\Scripts\Activate
+        ```
+
+    - **Sur Linux/Mac** :
+
+        ```bash
+        source venv/bin/activate
+        ```
+
+4. Installer les dépendances
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+
