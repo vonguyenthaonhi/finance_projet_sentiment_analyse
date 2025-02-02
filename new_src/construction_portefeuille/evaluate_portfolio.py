@@ -143,7 +143,7 @@ if __name__ == "__main__":
         "Stora_Enso": "new_data/full_data/Stora_Enso_updated_financial_data.csv",
         "Total_Energies": "new_data/full_data/Total_Energies_updated_financial_data.csv"
     }
-    portfolio_weights_path = "new_data/portfolio_weights.csv"
+    portfolio_weights_path = "new_output/portfolio/portfolio_weights.csv"
     
     analyzer = EvaluatePortfolio(stock_files, portfolio_weights_path)
     metrics = analyzer.run_analysis()

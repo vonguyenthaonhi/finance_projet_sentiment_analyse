@@ -136,4 +136,4 @@ if __name__ == "__main__":
     pcranalyzer.merge_put_call_ratios()
     pcranalyzer.calculate_signals(bullish_threshold, bearish_threshold)
     pcranalyzer.calculate_dynamic_portfolio_weights()
-    pcranalyzer.save_weights_to_csv("new_data/portfolio_weights.csv")
+    pcranalyzer.save_weights_to_csv("new_output/portfolio/portfolio_weights.csv")
