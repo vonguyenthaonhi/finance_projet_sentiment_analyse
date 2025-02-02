@@ -11,3 +11,12 @@ matplotlib
 selenium
 yfinance
 scipy
+pandas
+pyyaml
+webdriver-manager
+requests
+
+
+
+
+

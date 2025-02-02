@@ -1,0 +1,82 @@
+[
+    {
+        "Total Observations": "833",
+        "Violations": "32",
+        "Kupiec Statistic": "2.549",
+        "P-Value": "0.1104",
+        "Asset": "Total",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "833",
+        "Violations": "30",
+        "Kupiec Statistic": "3.7844",
+        "P-Value": "0.0517",
+        "Asset": "Total",
+        "VaR Type": "VaR_Adjusted"
+    },
+    {
+        "Total Observations": "812",
+        "Violations": "31",
+        "Kupiec Statistic": "2.5926",
+        "P-Value": "0.1074",
+        "Asset": "BP",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "812",
+        "Violations": "29",
+        "Kupiec Statistic": "3.8582",
+        "P-Value": "0.0495",
+        "Asset": "BP",
+        "VaR Type": "VaR_Adjusted"
+    },
+    {
+        "Total Observations": "804",
+        "Violations": "29",
+        "Kupiec Statistic": "3.6223",
+        "P-Value": "0.057",
+        "Asset": "BHP",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "804",
+        "Violations": "30",
+        "Kupiec Statistic": "2.9754",
+        "P-Value": "0.0845",
+        "Asset": "BHP",
+        "VaR Type": "VaR_Adjusted"
+    },
+    {
+        "Total Observations": "812",
+        "Violations": "38",
+        "Kupiec Statistic": "0.1789",
+        "P-Value": "0.6723",
+        "Asset": "Stora",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "812",
+        "Violations": "30",
+        "Kupiec Statistic": "3.1908",
+        "P-Value": "0.0741",
+        "Asset": "Stora",
+        "VaR Type": "VaR_Adjusted"
+    },
+    {
+        "Total Observations": "804",
+        "Violations": "38",
+        "Kupiec Statistic": "0.129",
+        "P-Value": "0.7195",
+        "Asset": "FMC",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "804",
+        "Violations": "38",
+        "Kupiec Statistic": "0.129",
+        "P-Value": "0.7195",
+        "Asset": "FMC",
+        "VaR Type": "VaR_Adjusted"
+    }
+]

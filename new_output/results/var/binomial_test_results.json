@@ -1,0 +1,82 @@
+[
+    {
+        "Total Observations": "833",
+        "Violations": "32",
+        "Binomial Statistic": "-1.5341",
+        "P-Value": "0.125",
+        "Asset": "Total",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "833",
+        "Violations": "30",
+        "Binomial Statistic": "-1.8521",
+        "P-Value": "0.064",
+        "Asset": "Total",
+        "VaR Type": "VaR_Adjusted"
+    },
+    {
+        "Total Observations": "812",
+        "Violations": "31",
+        "Binomial Statistic": "-1.5458",
+        "P-Value": "0.1222",
+        "Asset": "BP",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "812",
+        "Violations": "29",
+        "Binomial Statistic": "-1.8678",
+        "P-Value": "0.0618",
+        "Asset": "BP",
+        "VaR Type": "VaR_Adjusted"
+    },
+    {
+        "Total Observations": "804",
+        "Violations": "29",
+        "Binomial Statistic": "-1.8124",
+        "P-Value": "0.0699",
+        "Asset": "BHP",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "804",
+        "Violations": "30",
+        "Binomial Statistic": "-1.6505",
+        "P-Value": "0.0988",
+        "Asset": "BHP",
+        "VaR Type": "VaR_Adjusted"
+    },
+    {
+        "Total Observations": "812",
+        "Violations": "38",
+        "Binomial Statistic": "-0.4186",
+        "P-Value": "0.6755",
+        "Asset": "Stora",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "812",
+        "Violations": "30",
+        "Binomial Statistic": "-1.7068",
+        "P-Value": "0.0879",
+        "Asset": "Stora",
+        "VaR Type": "VaR_Adjusted"
+    },
+    {
+        "Total Observations": "804",
+        "Violations": "38",
+        "Binomial Statistic": "-0.356",
+        "P-Value": "0.7218",
+        "Asset": "FMC",
+        "VaR Type": "VaR_Hist"
+    },
+    {
+        "Total Observations": "804",
+        "Violations": "38",
+        "Binomial Statistic": "-0.356",
+        "P-Value": "0.7218",
+        "Asset": "FMC",
+        "VaR Type": "VaR_Adjusted"
+    }
+]
