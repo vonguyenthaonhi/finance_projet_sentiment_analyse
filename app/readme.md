@@ -1,14 +1,17 @@
-1. Launch api serveur (Backend)
+### API with fast api et frontend 
+
+# Backend
+
+1. 📄 Launch api server 
  ```
 
 uvicorn main:app --reload
  ```
 
-With docs
+# Frontend
 
 
-
-2 On other terminal, lanch the streamlit app(Frontend)
+2 📊 On other terminal, lanch the streamlit app(Frontend)
 
  ```
 streamlit run frontend.py
