@@ -18,9 +18,10 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
 
 📁 new_output/ (Results and visualisations)
 
-📊 Charts and analysis → Visualisations of cross-correlations and VaR (Historical vs Adjusted).
-📄 Results files → Data and calculations of risk and sentiment indicators.
+- 📊 Charts and analysis → Visualisations of cross-correlations and VaR (Historical vs Adjusted).
+- 📄 Results files → Data and calculations of risk and sentiment indicators.
 
 📁 domain/ (Analysis scripts and statistical models).
-📄 correlation_croisee_put_call_and_series.py → Analysis of cross-correlations between PCR and yields.
-📄 var_analysis.py → Calculation of Historical and Adjusted VaR with integration of PCR.
+
+- 📄 correlation_croisee_put_call_and_series.py → Analysis of cross-correlations between PCR and yields.
+- 📄 var_analysis.py → Calculation of Historical and Adjusted VaR with integration of PCR.
