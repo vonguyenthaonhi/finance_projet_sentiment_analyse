@@ -187,7 +187,7 @@ def get_financial_data():
 
 
 
-VAR_JSON_FILE = "...\new_output\results\var\financial_data_with_var.json"  # 📁 Modifier selon ton chemin réel
+VAR_JSON_FILE = "../new_output/results/var/financial_data_with_var.json" 
 
 @app.get("/api/v1/var-data/", response_model=List[Dict[str, str]])
 async def get_var_data():
