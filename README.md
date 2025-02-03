@@ -38,7 +38,7 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
 2. Créer l'environnement virtuel :
 
     ```bash
-    python -m venv venv
+    python -m venv venv --python=python3.11
     ```
 
 3. Activer l'environnement virtuel
