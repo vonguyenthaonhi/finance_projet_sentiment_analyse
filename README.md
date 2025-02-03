@@ -29,19 +29,21 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
 📁 app/ → app to visualize, launch webscrap, calculate weights in a porfolio based on energies stocks.
 
 # Installation
-1. Cloner le dépôt GitHub :
+1. Installer Chrome et Python 3.10
+
+2. Cloner le dépôt GitHub :
     ```bash
     git clone https://github.com/lucasvazelle/finance_projet_sentiment_analyse.git
     cd finance_projet_sentiment_analyse
     ```
     
-2. Créer l'environnement virtuel :
+3. Créer l'environnement virtuel :
 
     ```bash
     python -m venv venv --python=python3.11
     ```
 
-3. Activer l'environnement virtuel
+4. Activer l'environnement virtuel
 
     - **Sur Windows** :
 
@@ -55,7 +57,7 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
         source venv/bin/activate
         ```
 
-4. Installer les dépendances
+5. Installer les dépendances
 
     ```bash
     pip install -r requirements.txt
