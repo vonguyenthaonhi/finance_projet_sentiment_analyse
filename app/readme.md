@@ -5,7 +5,7 @@
 1. 📄 Launch api server 
  ```
 
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8000
  ```
 
 # Frontend
@@ -14,7 +14,7 @@ uvicorn main:app --reload
 2 📊 On other terminal, lanch the streamlit app(Frontend)
 
  ```
-streamlit run frontend.py
+streamlit run frontend.py --server.port 8001 
  ```
 
 This app allow to visualize, launch webscrap, calculate weights in a porfolio based on energies stocks.
