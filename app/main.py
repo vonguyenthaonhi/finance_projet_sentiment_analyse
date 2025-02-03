@@ -1,27 +1,16 @@
-# from typing import Any, List
-# from fastapi import APIRouter, FastAPI, Query, Request
-# from fastapi.middleware.cors import CORSMiddleware
-# from loguru import logger
-# from src.domain.put_call_ratio_with_contracts import calculate_put_call_ratio, compare_firms, get_historical_data
-# from new_app.api import api_router
-# import json
-# from dataclasses import dataclass
-# from typing import Union
-
-
 from fastapi import FastAPI, APIRouter, HTTPException, Path, Query, Request
 from fastapi.responses import HTMLResponse
 from dataclasses import dataclass
 import json
-from typing import Any, List
+from typing import Any, List, Dict
 from pydantic import BaseModel
 from config import settings, setup_app_logging
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes import api_router, router
+from api.routes import api_router, router_webscrap_eu, router_webscrap_us, router_portefeuille
 from datetime import date, datetime
 import yaml
 
-
+#______________________________data class_______________________
 @dataclass
 class RatioPutCall:
     date: date
@@ -40,6 +29,8 @@ def charger_json(fichier_json):
         donnees = json.load(json_file)
     return donnees
 
+#______________________________configuration_______________________
+
 
 with open("config.yml", "r") as file:
     config = yaml.safe_load(file)
@@ -48,28 +39,18 @@ PROJECT_NAME = config["app"]["name"]
 API_VERSION = config["app"]["version"]
 DEBUG = config["app"]["debug"]
 BACKEND_CORS_ORIGINS = config["cors"]["origins"]
-# DATABASE_URL = config["database"]["url"]
 LOGGING_LEVEL = config["logging"]["level"]
 
+JSON_FILE_PATH = "../new_data/direct_download_call_put/Put_Call Ration EU - Données Historiques.json"  
 
-put_call_us_list = [
-    RatioPutCall(
-        date=datetime.strptime(item["Date"], "%Y-%m-%d").date(),
-        ratio_name=item["Ratio Name"],
-        ratio_value=item["Ratio Value"],
-    )
-    for item in charger_json(
-        "../new_data/webscrapped_call_put_ratio/Put_Call Ratio US -Données Historiques 2019_2024.json"
-    )
-]
-put_call_us_dict = {item.date: item for item in put_call_us_list}
 
-# setup_app_logging(config=settings)
-
-app = FastAPI(title=PROJECT_NAME, openapi_url=f"{API_VERSION}/openapi.json")
+app = FastAPI(title=PROJECT_NAME, 
+              openapi_url=f"{API_VERSION}/openapi.json"
+              )
 
 root_router = APIRouter()
 
+#____________________________________page de démarrage______________________
 
 @root_router.get("/")
 def index(request: Request) -> Any:
@@ -93,11 +74,27 @@ def index(request: Request) -> Any:
     )
     return HTMLResponse(content=body)
 
+#_____________________________router_______________________
 
-app.include_router(api_router, prefix=settings.API_VERSION)
+app.include_router(api_router, prefix=API_VERSION)
 app.include_router(root_router)
-app.include_router(router, prefix="/api/v1")
+app.include_router(router_webscrap_us, prefix="/api/v1")
+app.include_router(router_webscrap_eu, prefix="/api/v1")
+app.include_router(router_portefeuille, prefix="/api/v1")
 
+
+#____________________________________put_call_us______________________
+put_call_us_list = [
+    RatioPutCall(
+        date=datetime.strptime(item["Date"], "%Y-%m-%d").date(),
+        ratio_name=item["Ratio Name"],
+        ratio_value=item["Ratio Value"],
+    )
+    for item in charger_json(
+        "../new_data/webscrapped_call_put_ratio/Put_Call Ratio US -Données Historiques 2019_2024.json"
+    )
+]
+put_call_us_dict = {item.date: item for item in put_call_us_list}
 
 @app.get("/api/v1/put-call-ratio-us/{date}", response_model=RatioPutCallResponse)
 async def get_put_call_ratio_us(date: str):
@@ -137,7 +134,87 @@ async def get_all_put_call_ratios():
         )
         for ratio in put_call_us_list
     ]
+#____________________________________put_call_europe______________________
 
+
+
+@app.get("/api/v1/put-call-ratio-eu/", response_model=List[Dict[str, str]])
+async def get_put_call_ratio_eu():
+    """
+    Récupère les données du Put-Call Ratio à partir d'un fichier JSON.
+    """
+    try:
+        with open(JSON_FILE_PATH, "r", encoding="utf-8") as file:
+            data = json.load(file)
+        return data
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Fichier JSON introuvable.")
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Erreur de décodage du fichier JSON.")
+
+
+
+
+#_________________________________actifs du portefeuille________________________________________________
+
+
+
+# Initialisation du portefeuille avec des calculs dynamiques
+file_paths = [
+    "../new_data/full_data/BHP_Group_updated_financial_data.csv",
+    "../new_data/full_data/BP_PLC_updated_financial_data.csv",
+    "../new_data/full_data/FMC_Corp_updated_financial_data.csv",
+    "../new_data/full_data/Stora_Enso_updated_financial_data.csv",
+    "../new_data/full_data/Total_Energies_updated_financial_data.csv"
+]
+stock_names = ["BHP_Group", "BP_PLC", "FMC_Corp", "Stora_Enso", "Total_Energies"]
+bullish_threshold = -1
+bearish_threshold = 1
+
+
+@app.get("/financial_data")
+def get_financial_data():
+    """Renvoie les cours financiers des actions."""
+    financial_data = {}
+    for stock in stock_names:
+        df = pd.read_csv(f"new_data/full_data/{stock}_updated_financial_data.csv")
+        financial_data[stock] = df[["Date", "Close"]].to_dict(orient='records')
+
+    return financial_data
+
+
+#_________________________________Var d'un portefeuille basé sur des actif du secteru de l'énergie_________________________________________
+
+
+
+VAR_JSON_FILE = "...\new_output\results\var\financial_data_with_var.json"  # 📁 Modifier selon ton chemin réel
+
+@app.get("/api/v1/var-data/", response_model=List[Dict[str, str]])
+async def get_var_data():
+    """
+    Récupère les données VaR (Value at Risk) à partir d'un fichier JSON.
+    """
+    try:
+        with open(VAR_JSON_FILE, "r", encoding="utf-8") as file:
+            data = json.load(file)
+        return data
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Fichier JSON introuvable.")
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Erreur de décodage du fichier JSON.")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="localhost", port=8001, log_level="debug")
+
+
+
+
+
+
+
+
+#_________________________________________________CORS__________________
 
 # # Set all CORS enabled origins
 if BACKEND_CORS_ORIGINS:
@@ -156,66 +233,3 @@ if __name__ == "__main__":
 
     uvicorn.run(app, host="localhost", port=8001, log_level="debug")
 
-
-# put_call_eu_list = [
-#     RatioPutCall(date=item['Date'], ratio_name=None,  ratio_value=item['Ouverture'])
-#     for item in charger_json("../new_data/webscrapped_call_put_ratio/Put_Call Ration EU - Données Historiques 12-2024 -01-2025.json")
-# ]
-# put_call_eu_dict = {item.date: item for item in put_call_eu_list}
-
-
-# @app.get("/api/v1/put-call-ratio-eu/{date}",
-#          response_model=RatioPutCallResponse)
-# async def get_put_call_ratio_eu(date: str):
-#     """
-#     Récupère le put-call-ratio pour une date donnée.
-#     """
-#     ratio_data = put_call_eu_dict.get(date)
-#     if not ratio_data:
-#         raise HTTPException(status_code=404, detail=f"Aucune donnée trouvée pour la date {date}")
-
-#     return RatioPutCallResponse(
-#         date=ratio_data.date,
-#         ratio_name=ratio_data.ratio_name,
-#         ratio_value=ratio_data.ratio_value
-#     )
-
-# @app.get("/api/v1/compare-put-call-ratio/{date}")
-# async def compare_put_call_ratio(date: str):
-#     """
-#     Compare le put-call-ratio pour une date donnée entre les données US et EU.
-#     """
-#     ratio_us = put_call_us_dict.get(date)
-#     ratio_eu = put_call_eu_dict.get(date)
-
-#     if not ratio_us and not ratio_eu:
-#         raise HTTPException(
-#             status_code=404,
-#             detail=f"Aucune donnée trouvée pour la date {date} ni pour les données US ni EU."
-#         )
-#     elif not ratio_us:
-#         raise HTTPException(
-#             status_code=404,
-#             detail=f"Aucune donnée trouvée pour les données US à la date {date}."
-#         )
-#     elif not ratio_eu:
-#         raise HTTPException(
-#             status_code=404,
-#             detail=f"Aucune donnée trouvée pour les données EU à la date {date}."
-#         )
-
-#     return {
-#         "date": date,
-#         "us_ratio": {
-#             "ratio_name": ratio_us.ratio_name,
-#             "ratio_value": ratio_us.ratio_value,
-#         },
-#         "eu_ratio": {
-#             "ratio_name": ratio_eu.ratio_name,
-#             "ratio_value": ratio_eu.ratio_value,
-#         },
-#         "comparison": {
-#             "is_us_higher": float(ratio_us.ratio_value) > float(ratio_eu.ratio_value),
-#             "difference": round(float(ratio_us.ratio_value) - float(ratio_eu.ratio_value), 2),
-#         },
-#     }

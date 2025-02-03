@@ -4,73 +4,199 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-# URL de l'API FastAPI
-API_URL = "http://localhost:8000/api/v1/put-call-ratio-us"
+# URL de base de l'API FastAPI
+API_URL = "http://localhost:8000/api/v1"
 
-# Titre de l'application Streamlit
-st.title("Put-Call Ratio US")
+# Titre principal
+st.title("Put-Call Ratio et portefeuille")
 
-# Description
-st.write(
-    """
-Cette application vous permet de récupérer les données du Put-Call Ratio pour une date donnée ou pour l'ensemble des dates disponibles.
-Entrez une date pour obtenir les informations correspondantes ou visualisez l'évolution des ratios pour toutes les dates.
-"""
-)
+st.write("""
+Bienvenue dans cette application permettant d'interagir avec l'API pour récupérer et analyser les ratios PUT/CALL.
+Vous pouvez soit afficher les données historiques, soit lancer un scraping pour récupérer de nouvelles données.
+         Vouvez aussi calculer des poids de pondération d'actif pour la construction de portefeuille basé sur le secteur de l'énergie et les ratios put/call.
 
-# Entrée de la date par l'utilisateur
-date_input = st.text_input("Entrez la date (YYYY-MM-DD):", value="2024-01-01")
+""")
 
-# Bouton pour récupérer les données pour une date spécifique
-if st.button("Obtenir les données pour cette date"):
+st.title("Put-Call Ratio US et Europe")
+
+
+# --- SECTION 3 : LANCER UN SCRAPING US---
+st.header(" 📊 Scraping des Ratios PUT/CAL US")
+
+# Formulaire pour entrer les paramètres du scraping
+with st.form("scraping_form"):
+    start_date = st.text_input("📅 Date de début (YYYY-MM-DD) :", value="2024-01-01")
+    end_date = st.text_input("📅 Date de fin (YYYY-MM-DD, optionnel) :", value="")
+    save = st.checkbox("💾 Sauvegarder en CSV")
+
+    submit_scraping = st.form_submit_button("🚀Lancer le Scraping")
+
+if submit_scraping:
     try:
-        # Vérification du format de la date
-        datetime.strptime(date_input, "%Y-%m-%d")
+        datetime.strptime(start_date, "%Y-%m-%d")
+        end_date_param = f"&end_date={end_date}" if end_date else ""
 
-        # Envoi de la requête GET à l'API FastAPI pour la date spécifique
-        response = requests.get(f"{API_URL}/{date_input}")
+        response_scrape = requests.get(f"{API_URL}/scrape-put-call-ratio/?start_date={start_date}{end_date_param}&save={save}")
 
-        if response.status_code == 200:
-            data = response.json()
-            st.write(f"Date: {data['date']}")
-            st.write(f"Nom du ratio: {data['ratio_name']}")
-            st.write(f"Valeur du ratio: {data['ratio_value']}")
-        elif response.status_code == 404:
-            st.error(
-                f"Aucune donnée trouvée pour la date {date_input}. Rappel, les données ne sont pas disponibles les week-ends."
-            )
+        if response_scrape.status_code == 200:
+            result = response_scrape.json()
+            st.success("✅ Scraping terminé avec succès !")
+            st.json(result)  # Afficher les données récupérées
         else:
-            st.error(f"Erreur : {response.status_code} - {response.text}")
+            st.error(f"❌ Erreur : {response_scrape.status_code} - {response_scrape.text}")
     except ValueError:
-        st.error("Format de date invalide. Utilisez 'YYYY-MM-DD'.")
+        st.error("❌ Format de date invalide. Utilisez 'YYYY-MM-DD'.")
 
-# Bouton pour récupérer toutes les données
-if st.button("Voir l'évolution des ratios"):
-    # Envoi de la requête GET pour récupérer toutes les données
-    response_all = requests.get(f"{API_URL}/")
+# --- SECTION 3 : LANCER UN SCRAPING PUT CALL Europe---
 
+st.header("📊 Scraper Put-Call Ratio Europe")
+
+st.write("Cliquez sur le bouton ci-dessous pour lancer le scraping.")
+
+if st.button("🚀 Lancer le Scraping"):
+    response = requests.get(f"{API_URL}/scrape-put-call-ratio-eu/")
+    
+    if response.status_code == 200:
+        data = response.json()
+        st.success("✅ Scraping terminé avec succès !")
+
+        if "data" in data and data["data"]:
+            df = pd.DataFrame(data["data"])
+            df["Date"] = pd.to_datetime(df["Date"], dayfirst=True)
+            df["Dernier"] = df["Dernier"].str.replace(",", ".").astype(float)
+
+            st.write("📋 **Données récupérées :**")
+            st.dataframe(df)
+
+            st.subheader("📈 Graphique du Put-Call Ratio")
+            st.line_chart(df.set_index("Date")["Dernier"])
+        else:
+            st.warning("⚠️ Aucune donnée récupérée.")
+    else:
+        st.error(f"❌ Erreur : {response.status_code} - {response.text}")
+
+
+
+
+
+
+
+
+
+
+
+# --- SECTION 2 : AFFICHER TOUS LES PUT-CALL RATIOS US ---
+st.header("📈 Évolution du Put-Call Ratio US")
+
+if st.button("Charger toutes les données et afficher le graphique"):
+    response_all = requests.get(f"{API_URL}/put-call-ratio-us/")
+    
     if response_all.status_code == 200:
         data_all = response_all.json()
-
-        # Convertir les données en DataFrame pour faciliter l'affichage et la visualisation
         df = pd.DataFrame(data_all)
-        df["date"] = pd.to_datetime(df["date"])
-        df["ratio_value"] = pd.to_numeric(df["ratio_value"], errors="coerce")
+        df['date'] = pd.to_datetime(df['date'])
+        df['ratio_value'] = pd.to_numeric(df['ratio_value'], errors='coerce')
 
-        # Affichage des données sous forme de tableau
-        st.write(df)
+        st.write("📋 **Données disponibles :**")
+        st.dataframe(df)
 
-        # Affichage du graphique
-        st.subheader("Évolution du Put-Call Ratio")
-        plt.figure(figsize=(10, 6))
-        plt.plot(df["date"], df["ratio_value"], marker="o", linestyle="-", color="b")
-        plt.title("Put-Call Ratio US au fil du temps")
-        plt.xlabel("Date")
-        plt.ylabel("Put-Call Ratio")
-        plt.grid(True)
-        plt.xticks(rotation=45)
-        st.pyplot(plt)
+        st.subheader("📊 Graphique du Put-Call Ratio")
+        st.line_chart(df.set_index("date")["ratio_value"])
+
     else:
-        st.error(
-            f"Erreur lors de la récupération des données : {response_all.status_code} - {response_all.text}"
-        )
+        st.error(f"❌ Erreur lors de la récupération des données : {response_all.status_code} - {response_all.text}")
+
+
+
+
+# --- SECTION 3 : LANCER UN SCRAPING Europe---
+
+st.header("📈 Évolution du Put-Call Ratio Europe")
+
+st.write("Cliquez sur le bouton ci-dessous pour récupérer les données.")
+
+if st.button("Charger toutes les données  et afficher le graphique"):
+    response = requests.get(f"{API_URL}/put-call-ratio-eu/")
+
+    if response.status_code == 200:
+        data = response.json()
+        st.success("✅ Données chargées avec succès !")
+
+        if data:
+            df = pd.DataFrame(data)
+            
+            # Convertir les valeurs numériques et les dates
+            df["Date"] = pd.to_datetime(df["﻿\"Date\""], format="%d/%m/%Y", dayfirst=True)
+            df["Dernier"] = df["Dernier"].str.replace(",", ".").astype(float)
+
+            st.write("📋 **Données récupérées :**")
+            st.dataframe(df)
+
+            st.subheader("📈 Graphique du Put-Call Ratio")
+            st.line_chart(df.set_index("Date")["Dernier"])
+        else:
+            st.warning("⚠️ Aucune donnée trouvée.")
+    else:
+        st.error(f"❌ Erreur : {response.status_code} - {response.text}")
+
+
+st.title("Portefeuille basé sur des actifs du secteur de l'énergie")
+
+
+st.header("📊 Value at risk du portefeuille")
+
+st.write("Cliquez sur le bouton ci-dessous pour récupérer les données.")
+
+if st.button("🔄 Charger les données VaR"):
+    response = requests.get(f"{API_URL}/var-data/")
+
+    if response.status_code == 200:
+        data = response.json()
+        st.success("✅ Données chargées avec succès !")
+
+        if data:
+            df = pd.DataFrame(data)
+            
+            # Convertir les valeurs numériques et les dates
+            df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d")
+            df["Close"] = df["Close"].astype(float)
+            df["Put-Call Ratio"] = df["Put-Call Ratio"].astype(float)
+            df["VaR_Hist"] = df["VaR_Hist"].astype(float)
+            df["VaR_Adjusted"] = df["VaR_Adjusted"].astype(float)
+
+            st.write("📋 **Données récupérées :**")
+            st.dataframe(df)
+
+            st.subheader("📈 Graphique VaR vs Put-Call Ratio")
+            st.line_chart(df.set_index("Date")[["Put-Call Ratio", "VaR_Hist", "VaR_Adjusted"]])
+        else:
+            st.warning("⚠️ Aucune donnée trouvée.")
+    else:
+        st.error(f"❌ Erreur : {response.status_code} - {response.text}")
+
+
+
+
+st.header("Calcul des poids du portefeuille")
+
+# Seuils pour les signaux
+bullish_threshold = st.number_input("Seuil Bullish", value=-1.0)
+bearish_threshold = st.number_input("Seuil Bearish", value=1.0)
+
+if st.button("Calculer les Poids"):
+    response = requests.get(
+        "http://127.0.0.1:8000/api/v1/calculate_weights/",
+        params={"bullish_threshold": bullish_threshold, "bearish_threshold": bearish_threshold},
+    )
+
+    if response.status_code == 200:
+        weights_data = response.json()["weights"]
+        weights_df = pd.DataFrame(weights_data)
+
+        st.write("### Poids du Portefeuille")
+        st.dataframe(weights_df)
+    else:
+        st.error("Erreur lors du calcul des poids.")
+
+
+
