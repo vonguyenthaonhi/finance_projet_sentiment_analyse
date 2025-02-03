@@ -5,12 +5,9 @@ RUN apt update && apt-get install -y curl && apt-get install -y python3 && apt-g
 RUN mkdir -p /home/finance_projet/webapp_put_call
 
 # Installer Google Chrome stable
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN wget -q -O - https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb > google-chrome.deb \
-    && dpkg -i google-chrome.deb \
-    && apt-get install -f -y \
-    && rm google-chrome.deb
+RUN curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt-get install -y ./google-chrome-stable_current_amd64.deb && \
+    rm google-chrome-stable_current_amd64.deb
 
 # Installer ChromeDriver via WebDriverManager (cela gère automatiquement les versions)
 RUN pip3 install webdriver-manager
@@ -22,7 +19,7 @@ COPY . .
 RUN chmod +x *.sh
 
 RUN python3 -m pip install -r requirements.txt
-
+RUN python3 install --upgrade typing_extensions
 WORKDIR /app
 
 
