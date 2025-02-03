@@ -1,4 +1,3 @@
-# Utiliser l'image de base Ubuntu
 FROM ubuntu:20.04
 
 RUN apt update && apt-get install -y curl && apt-get install -y python3 && apt-get install -y python3-pip
@@ -6,6 +5,8 @@ RUN apt update && apt-get install -y curl && apt-get install -y python3 && apt-g
 RUN mkdir -p /home/finance_projet/webapp_put_call
 
 # Installer Google Chrome stable
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN wget -q -O - https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb > google-chrome.deb \
     && dpkg -i google-chrome.deb \
     && apt-get install -f -y \
@@ -22,7 +23,6 @@ RUN chmod +x *.sh
 
 RUN python3 -m pip install -r requirements.txt
 
-# Définir le répertoire de travail
 WORKDIR /app
 
 
