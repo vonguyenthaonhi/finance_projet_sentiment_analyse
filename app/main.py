@@ -4,12 +4,12 @@ from dataclasses import dataclass
 import json
 from typing import Any, List, Dict
 from pydantic import BaseModel
-from config import settings, setup_app_logging
+# from config import settings, setup_app_logging
 from fastapi.middleware.cors import CORSMiddleware
 from api.routes import api_router, router_webscrap_eu, router_webscrap_us, router_portefeuille
 from datetime import date, datetime
 import yaml
-
+import pandas as pd
 #______________________________data class_______________________
 @dataclass
 class RatioPutCall:
@@ -177,7 +177,7 @@ def get_financial_data():
     """Renvoie les cours financiers des actions."""
     financial_data = {}
     for stock in stock_names:
-        df = pd.read_csv(f"new_data/full_data/{stock}_updated_financial_data.csv")
+        df = pd.read_csv(f"../new_data/full_data/{stock}_updated_financial_data.csv")
         financial_data[stock] = df[["Date", "Close"]].to_dict(orient='records')
 
     return financial_data

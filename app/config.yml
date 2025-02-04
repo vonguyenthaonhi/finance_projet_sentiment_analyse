@@ -9,6 +9,7 @@ cors:
     - "http://localhost:3000"
     - "http://localhost:8080"
     -  "http://localhost:8081"
+    -  "http://localhost:8000"
 
 # database:
 #   url: "postgresql://user:password@localhost:5432/mydatabase"
