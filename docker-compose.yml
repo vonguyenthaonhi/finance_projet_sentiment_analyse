@@ -4,7 +4,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     ports:
       - "8000:8000"
     volumes:
@@ -15,7 +15,10 @@ services:
       - ENV=production
 
   frontend:
-    image: Dockerfile.frontend
+
+    build:
+      dockerfile: Dockerfile.frontend
+      context: .
     command: streamlit run app/frontend.py
     ports:
       - "8501:8501"
