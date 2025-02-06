@@ -78,8 +78,8 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
     - **Sur Linux/Mac** :
 
     ```bash
- python3 -m pip install -r requirements.txt
- python3 -m pip install --upgrade typing_extensions
+   python3 -m pip install -r requirements.txt
+   python3 -m pip install --upgrade typing_extensions
     ```
 
 
