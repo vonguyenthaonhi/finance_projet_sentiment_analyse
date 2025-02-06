@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 # URL de base de l'API FastAPI
-API_URL = "http://localhost:8000/api/v1"
-
+API_URL = "http://backend:8000/api/v1"
 # Titre principal
 st.title("Put-Call Ratio et portefeuille")
 
@@ -37,7 +36,7 @@ if submit_scraping:
         datetime.strptime(start_date, "%Y-%m-%d")
         end_date_param = f"&end_date={end_date}" if end_date else ""
 
-        response_scrape = requests.get(f"{API_URL}/scrape-put-call-ratio_us/?start_date={start_date}{end_date_param}&save={save}")
+        response_scrape = requests.get(f"{API_URL}/scrape-put-call-ratio-us/?start_date={start_date}{end_date_param}&save={save}")
 
         if response_scrape.status_code == 200:
             result = response_scrape.json()
@@ -91,7 +90,7 @@ st.header("📈 Évolution du Put-Call Ratio US")
 st.write("Cliquez sur le bouton ci-dessous")
 
 if st.button("Charger toutes les données et afficher le graphique"):
-    response_all = requests.get(f"{API_URL}/put-call-ratio-us/")
+    response_all = requests.get(f"{API_URL}/put-call-ratio_us/")
     
     if response_all.status_code == 200:
         data_all = response_all.json()
@@ -229,7 +228,7 @@ bearish_threshold = st.number_input("Seuil Bearish", value=1.0)
 
 if st.button(" 🚀Calculer les Poids"):
     response = requests.get(
-        "http://127.0.0.1:8000/api/v1/calculate_weights/",
+        "f{API_URL}/calculate_weights/",
         params={"bullish_threshold": bullish_threshold, "bearish_threshold": bearish_threshold},
     )
 
