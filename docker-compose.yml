@@ -3,9 +3,7 @@ version: '3'
 services:
   backend:
     container_name: backend
-    build:
-      context: .
-      dockerfile: dockerfile
+    image: lucasvazelle/finance_projet_sentiment_analyse-backend
     ports:
       - "8000:8000"
     volumes:
@@ -16,10 +14,8 @@ services:
       - ENV=production
 
   frontend:
-
-    build:
-      dockerfile: Dockerfile.frontend
-      context: .
+    container_name: frontend
+    image: lucasvazelle/finance_projet_sentiment_analyse-frontend
     command: streamlit run app/frontend_docker.py
     ports:
       - "8501:8501"
