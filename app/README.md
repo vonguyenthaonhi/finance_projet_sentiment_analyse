@@ -25,20 +25,30 @@ streamlit run frontend.py --server.port 8001
 
 
 
-### 2. Lancer avec Docker (recommandé) 🐳
+### 2. Launch with Docker (recommended) 🐳
 
-#### Prérequis
+#### prerequisite
 
 You can also deploy the application with Docker. Make sure you have Docker installed first.
 
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-  
+
+#### 1. First way
+
+Run **from the root** of the Git repository
 ```
 docker-compose pull 
 docker-compose up -d
 ```
-ou
+Excecute http://localhost:8000/ on your Browser for backend api
+Excecute http://localhost:8501/ on your Browser for frontend 
+
+
+#### 1. Second way
+
+Run **from the root** of the Git repository
+
 ```
 docker pull lucasvazelle/finance_projet_sentiment_analyse-backend
 docker pull lucasvazelle/finance_projet_sentiment_analyse-frontend
