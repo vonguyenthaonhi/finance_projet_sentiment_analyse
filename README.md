@@ -39,9 +39,17 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
     
 3. Créer l'environnement virtuel :
 
+    - **Sur Windows** :
+
     ```bash
     python -m venv venv --python=python3.10
     ```
+
+    - **Sur Linux/Mac** :
+          ```bash
+python3.10 -m venv venv
+    ```
+
 
 4. Activer l'environnement virtuel
 
@@ -58,11 +66,15 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
         ```
 
 5. Installer les dépendances
+    - **Sur Windows** :
 
     ```bash
     pip install -r requirements.txt
     pip install --upgrade typing_extensions    
 ```
+    - **Sur Linux/Mac** :
 
+ python3 -m pip install -r requirements.txt
+ python3 -m pip install --upgrade typing_extensions
 
 
