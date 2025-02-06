@@ -26,8 +26,8 @@ st.write("Cliquez sur le bouton ci-dessous")
 
 # Formulaire pour entrer les paramètres du scraping
 with st.form("scraping_form"):
-    start_date = st.text_input("📅 Date de début (YYYY-MM-DD) :", value="2024-01-01")
-    end_date = st.text_input("📅 Date de fin (YYYY-MM-DD, optionnel) :", value="")
+    start_date = st.text_input("📅 Date de début (YYYY-MM-DD) :", value="2025-01-01")
+    end_date = st.text_input("📅 Date de fin (YYYY-MM-DD, optionnel) :", value="2025-01-05")
     save = st.checkbox("💾 Sauvegarder en CSV")
 
     submit_scraping = st.form_submit_button("🚀Lancer le Scraping")

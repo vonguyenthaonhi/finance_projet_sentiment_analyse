@@ -2,6 +2,7 @@ version: '3'
 
 services:
   backend:
+    container_name: backend
     build:
       context: .
       dockerfile: dockerfile
@@ -19,10 +20,11 @@ services:
     build:
       dockerfile: Dockerfile.frontend
       context: .
-    command: streamlit run app/frontend.py
+    command: streamlit run app/frontend_docker.py
     ports:
       - "8501:8501"
     volumes:
       - .:/app
     environment:
-      - ENV=production
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0

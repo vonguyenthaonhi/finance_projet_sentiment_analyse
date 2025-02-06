@@ -27,7 +27,7 @@ async def scrape_put_call_ratio_us(
 ):
     """
     Lancer le scraping du ratio PUT/CALL entre `start_date` et `end_date`.
-    Si `save` est activé, les résultats seront sauvegardés en CSV.
+    Si `save` est activé, les résultats seront sauvegardés en CSV. Testez sur des dates récentes comme "2025-01-01" et "2025-01-01"
     """
     scraper = RatioScraperUS(start_date, end_date, verbose=True)
     data = scraper.scrape_ratios()

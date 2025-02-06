@@ -9,11 +9,11 @@ COPY requirements.txt .
 
 # Installer les dépendances
 RUN pip install -r requirements.txt
-
+RUN pip install --upgrade typing_extensions
 # Copier tout le contenu du projet
 COPY . .
 
 
 # Se déplacer dans le dossier "app" et lancer Streamlit
-CMD ["sh", "-c", "cd app && streamlit run frontend.py --server.port 8501 --server.address 0.0.0.0"]
+CMD ["sh", "-c", "cd app && streamlit run frontend_docker.py --server.port 8501"]
 
