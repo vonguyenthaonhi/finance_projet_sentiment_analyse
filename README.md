@@ -46,8 +46,9 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
     ```
 
     - **Sur Linux/Mac** :
-          ```bash
-python3.10 -m venv venv
+    - 
+   ```bash
+    python3.10 -m venv venv
     ```
 
 
@@ -71,7 +72,8 @@ python3.10 -m venv venv
     ```bash
     pip install -r requirements.txt
     pip install --upgrade typing_extensions    
-```
+  ```
+
     - **Sur Linux/Mac** :
 
  python3 -m pip install -r requirements.txt
