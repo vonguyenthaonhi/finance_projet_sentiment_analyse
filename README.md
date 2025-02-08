@@ -92,10 +92,11 @@ You can also deploy the application with Docker. Make sure you have Docker insta
 #### 1. First way
 
 Run **from the root** of the Git repository
-```bash
-docker-compose pull 
-docker-compose up -d
-```
+
+  ```bash
+  docker-compose pull 
+  docker-compose up -d
+  ```
 Excecute http://localhost:8000/ on your Browser for backend api
 Excecute http://localhost:8501/ on your Browser for frontend 
 
@@ -104,20 +105,20 @@ Excecute http://localhost:8501/ on your Browser for frontend
 
 Run **from the root** of the Git repository
 
-```bash
-docker pull lucasvazelle/finance_projet_sentiment_analyse-backend
-docker pull lucasvazelle/finance_projet_sentiment_analyse-frontend
-docker-compose up -d
-```
+  ```bash
+  docker pull lucasvazelle/finance_projet_sentiment_analyse-backend
+  docker pull lucasvazelle/finance_projet_sentiment_analyse-frontend
+  docker-compose up -d
+  ```
 
 Excecute http://localhost:8000/ on your Browser for backend api
 Excecute http://localhost:8501/ on your Browser for frontend 
 
 
 
-    ```bash
-   python3 -m pip install -r requirements.txt
-   python3 -m pip install --upgrade typing_extensions
-    ```
+```bash
+  python3 -m pip install -r requirements.txt
+  python3 -m pip install --upgrade typing_extensions
+```
 
 
