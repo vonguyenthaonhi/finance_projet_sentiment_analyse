@@ -109,6 +109,7 @@ docker pull lucasvazelle/finance_projet_sentiment_analyse-backend
 docker pull lucasvazelle/finance_projet_sentiment_analyse-frontend
 docker-compose up -d
 ```
+
 Excecute http://localhost:8000/ on your Browser for backend api
 Excecute http://localhost:8501/ on your Browser for frontend 
 
