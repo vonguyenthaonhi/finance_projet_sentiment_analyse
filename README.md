@@ -76,6 +76,43 @@ The impact of PCR on risk management by comparing Historical VaR and Sentiment A
     ```
 
     - **Sur Linux/Mac** :
+  
+
+ ## API with fast api et frontend with Docker (recommended) 🐳
+
+This app allow to visualize, launch webscrap, calculate weights in a porfolio based on energies stocks.
+
+#### prerequisite
+
+You can also deploy the application with Docker. Make sure you have Docker installed first.
+
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+#### 1. First way
+
+Run **from the root** of the Git repository
+```
+docker-compose pull 
+docker-compose up -d
+```
+Excecute http://localhost:8000/ on your Browser for backend api
+Excecute http://localhost:8501/ on your Browser for frontend 
+
+
+#### 2. Second way
+
+Run **from the root** of the Git repository
+
+```
+docker pull lucasvazelle/finance_projet_sentiment_analyse-backend
+docker pull lucasvazelle/finance_projet_sentiment_analyse-frontend
+docker-compose up -d
+```
+Excecute http://localhost:8000/ on your Browser for backend api
+Excecute http://localhost:8501/ on your Browser for frontend 
+
+
 
     ```bash
    python3 -m pip install -r requirements.txt
