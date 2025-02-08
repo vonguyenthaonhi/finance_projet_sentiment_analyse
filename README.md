@@ -92,7 +92,7 @@ You can also deploy the application with Docker. Make sure you have Docker insta
 #### 1. First way
 
 Run **from the root** of the Git repository
-```
+```bash
 docker-compose pull 
 docker-compose up -d
 ```
@@ -104,7 +104,7 @@ Excecute http://localhost:8501/ on your Browser for frontend
 
 Run **from the root** of the Git repository
 
-```
+```bash
 docker pull lucasvazelle/finance_projet_sentiment_analyse-backend
 docker pull lucasvazelle/finance_projet_sentiment_analyse-frontend
 docker-compose up -d
