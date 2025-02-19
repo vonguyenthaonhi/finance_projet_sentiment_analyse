@@ -7,6 +7,8 @@ The relationship between PCR (US and Europe) and stock returns using cross-corre
 The effectiveness of PCR as an investment signal, by integrating its influence into a dynamic portfolio strategy.
 The impact of PCR on risk management by comparing Historical VaR and Sentiment Adjusted VaR.
 
+## Authors: VO Nguyen Thao Nhi, TARVERDIAN Mariam, VAZELLE Lucas
+
 ## Project structure
 
 📁 new_data/ → Raw data, webscrapped date and final data in use
