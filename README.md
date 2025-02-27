@@ -123,4 +123,9 @@ Excecute http://localhost:8501/ on your Browser for frontend
   python3 -m pip install --upgrade typing_extensions
 ```
 
+## Auteurs
+
+- [Vo Nguyen Thao Nhi](https://github.com/vonguyenthaonhi)
+- [Tarvedian Mariam](https://github.com/Maro18287)
+- [Vazelle Lucas](https://github.com/lucasvazelle)
 
